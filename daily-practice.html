@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Master poker with daily practice. Solve 10 GTO puzzles, get instant solver feedback, analyze hand ranges, and track your progress. Free iOS app.">
+  <title>Daily Poker Practice | 10 GTO Puzzles with Solver Feedback - Stack Poker</title>
+  <link rel="canonical" href="https://stackpoker.gg/daily-practice">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://stackpoker.gg/daily-practice">
+  <meta property="og:title" content="Daily Poker Practice | 10 GTO Puzzles with Solver Feedback">
+  <meta property="og:description" content="Master poker with daily practice. Solve 10 GTO puzzles, get instant solver feedback, and track your progress.">
+  <meta property="og:image" content="https://stackpoker.gg/images/og-image.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://stackpoker.gg/daily-practice">
+  <meta name="twitter:title" content="Daily Poker Practice | 10 GTO Puzzles with Solver Feedback">
+  <meta name="twitter:description" content="Master poker with daily practice. Solve 10 GTO puzzles, get instant solver feedback, and track your progress.">
+  <meta name="twitter:image" content="https://stackpoker.gg/images/og-image.png">
+
+  <!-- Structured Data - Software Application -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Stack Poker",
+    "operatingSystem": "iOS",
+    "applicationCategory": "GameApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "Daily poker training app with GTO puzzles and solver feedback",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "100"
+    }
+  }
+  </script>
+
+  <!-- FAQ Schema for Rich Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How long does daily poker practice take?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The Daily 10 takes about 5 minutes to complete. It's designed to fit into your morning routine or any spare moment during the day."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Stack Poker free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, Stack Poker is free to download and play. The Daily 10 puzzles are free, with optional unlocks for deeper GTO analysis and insights."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is GTO poker?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "GTO (Game Theory Optimal) is a mathematically balanced poker strategy that cannot be exploited. Stack Poker uses solver-generated GTO solutions to show you the optimal play in each situation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does the Daily 10 scoring work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You earn points for matching the GTO-correct action, with bonus points for accuracy on close decisions. Your score reflects both decision quality and EV accuracy."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♠️</text></svg>">
+</head>
+<body class="bg-bg-warm">
+  <!-- Header -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm transition-all duration-300 border-b border-transparent">
+    <nav class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <a href="/" class="flex items-center">
+          <img src="/images/logo.png" alt="Stack Poker" class="h-8 invert header-logo">
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="/#features" class="nav-link">Features</a>
+          <a href="/#faq" class="nav-link">FAQ</a>
+          <a href="https://apps.apple.com/us/app/stack-poker-bankroll-tracker/id6745683972" target="_blank" rel="noopener noreferrer" class="btn-primary text-sm">Download</a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+          <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="mobile-menu md:hidden">
+    <div class="flex items-center justify-between p-4 border-b border-gray-100">
+      <img src="/images/logo.png" alt="Stack Poker" class="h-8 invert header-logo">
+      <button id="mobile-menu-close" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="flex flex-col p-4 space-y-4">
+      <a href="/#features" class="mobile-menu-link text-lg font-medium text-gray-700 hover:text-poker-green py-2">Features</a>
+      <a href="/#faq" class="mobile-menu-link text-lg font-medium text-gray-700 hover:text-poker-green py-2">FAQ</a>
+      <a href="https://apps.apple.com/us/app/stack-poker-bankroll-tracker/id6745683972" target="_blank" rel="noopener noreferrer" class="mobile-menu-link btn-primary text-center mt-4">Download</a>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="pt-24 pb-20 md:pt-32 md:pb-28 overflow-hidden">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <!-- Hero Content -->
+        <div class="text-center lg:text-left">
+          <div class="inline-flex items-center px-4 py-2 rounded-full bg-poker-green/10 text-poker-green text-sm font-medium mb-6">
+            Daily 10 Feature
+          </div>
+
+          <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.2] text-balance tracking-tight gradient-text pb-2">
+            Daily Poker Practice That Actually Works
+          </h1>
+          <p class="mt-6 text-lg sm:text-xl text-gray-500 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+            10 solver-backed puzzles. Instant GTO feedback. Real improvement.
+          </p>
+
+          <div class="mt-10 flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+            <a href="https://apps.apple.com/us/app/stack-poker-bankroll-tracker/id6745683972" target="_blank" rel="noopener noreferrer" class="btn-primary w-full sm:w-auto">
+              <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+              </svg>
+              Download on the App Store
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero Visual - Phone Mockup -->
+        <div class="relative flex justify-center lg:justify-end">
+          <div id="hero-phone" class="phone-frame w-56 sm:w-64 md:w-72 parallax-phone">
+            <div class="phone-screen aspect-[9/19.5]">
+              <img src="/images/daily.png" alt="Daily 10 poker puzzles with GTO feedback" class="w-full h-full object-cover">
+            </div>
+          </div>
+          <!-- Decorative elements -->
+          <div class="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-poker-green/5 rounded-full blur-3xl"></div>
+          <div class="absolute -z-10 top-1/3 right-0 w-32 h-32 bg-poker-gold/10 rounded-full blur-2xl"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How Daily 10 Works -->
+  <section class="py-16 md:py-20 bg-white border-y border-gray-100">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <h2 class="font-display text-xl md:text-2xl font-semibold text-gray-900">How Daily 10 Works</h2>
+      </div>
+      <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-4 lg:gap-6">
+        <!-- Step 1 -->
+        <div class="how-it-works-step flex-1 max-w-xs">
+          <div class="step-number">1</div>
+          <h3 class="font-display font-semibold text-gray-900 mb-1">Play 10 Daily Puzzles</h3>
+          <p class="text-sm text-gray-500">Quick 5-minute daily challenge with fresh hands</p>
+        </div>
+
+        <div class="step-connector"></div>
+
+        <!-- Step 2 -->
+        <div class="how-it-works-step flex-1 max-w-xs">
+          <div class="step-number">2</div>
+          <h3 class="font-display font-semibold text-gray-900 mb-1">Get Instant Feedback</h3>
+          <p class="text-sm text-gray-500">See immediately if you matched the GTO play</p>
+        </div>
+
+        <div class="step-connector"></div>
+
+        <!-- Step 3 -->
+        <div class="how-it-works-step flex-1 max-w-xs">
+          <div class="step-number">3</div>
+          <h3 class="font-display font-semibold text-gray-900 mb-1">Unlock Deep Analysis</h3>
+          <p class="text-sm text-gray-500">Hand ranges, EV breakdowns, action frequencies</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GTO Insights Section -->
+  <section class="py-20 md:py-28">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 animate-on-scroll">
+        <div class="section-badge">
+          <span class="section-badge-dot"></span>
+          GTO Insights
+        </div>
+        <h2 class="section-title">Solver-Level Analysis in Your Pocket</h2>
+        <p class="section-subtitle mx-auto">Every puzzle unlocks deep insights that teach you why, not just what.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-16">
+        <!-- Phone mockup -->
+        <div class="relative flex justify-center order-2 lg:order-1">
+          <div class="phone-frame w-56 sm:w-64 md:w-72">
+            <div class="phone-screen aspect-[9/19.5]">
+              <img src="/images/analysis.png" alt="GTO solver analysis showing hand ranges and EV breakdown" class="w-full h-full object-cover">
+            </div>
+          </div>
+          <div class="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-poker-green/5 rounded-full blur-3xl"></div>
+        </div>
+
+        <!-- Feature cards -->
+        <div class="grid sm:grid-cols-2 gap-4 order-1 lg:order-2">
+          <div class="bg-white rounded-xl p-6 shadow-card border border-gray-100">
+            <div class="w-10 h-10 rounded-lg bg-poker-green/10 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-poker-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+            </div>
+            <h3 class="font-display font-semibold text-gray-900 mb-2">EV Breakdown</h3>
+            <p class="text-sm text-gray-500">See expected value for every action—fold, call, raise—and understand the cost of mistakes.</p>
+          </div>
+
+          <div class="bg-white rounded-xl p-6 shadow-card border border-gray-100">
+            <div class="w-10 h-10 rounded-lg bg-poker-gold/10 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-poker-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+              </svg>
+            </div>
+            <h3 class="font-display font-semibold text-gray-900 mb-2">Range Visualization</h3>
+            <p class="text-sm text-gray-500">Interactive 13x13 hand grid shows exactly which hands to play and how.</p>
+          </div>
+
+          <div class="bg-white rounded-xl p-6 shadow-card border border-gray-100">
+            <div class="w-10 h-10 rounded-lg bg-poker-green/10 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-poker-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
+              </svg>
+            </div>
+            <h3 class="font-display font-semibold text-gray-900 mb-2">Action Frequencies</h3>
+            <p class="text-sm text-gray-500">Learn GTO frequencies, not just "right or wrong"—understand mixed strategies.</p>
+          </div>
+
+          <div class="bg-white rounded-xl p-6 shadow-card border border-gray-100">
+            <div class="w-10 h-10 rounded-lg bg-poker-gold/10 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-poker-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
+            </div>
+            <h3 class="font-display font-semibold text-gray-900 mb-2">Villain Ranges</h3>
+            <p class="text-sm text-gray-500">Understand what opponents likely hold based on their actions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Daily Practice Matters -->
+  <section class="py-16 md:py-20 bg-gray-900">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <h2 class="font-display text-2xl md:text-3xl font-bold text-white mb-3">Why Daily Practice Matters</h2>
+        <p class="text-gray-400 max-w-xl mx-auto">Small daily habits beat occasional grinding sessions.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <div class="bg-white/5 rounded-xl p-6 text-center">
+          <div class="text-3xl mb-3">🔄</div>
+          <h3 class="font-display font-semibold text-white mb-2">Consistency Beats Cramming</h3>
+          <p class="text-sm text-gray-400">5 minutes daily builds stronger habits than sporadic hour-long sessions.</p>
+        </div>
+
+        <div class="bg-white/5 rounded-xl p-6 text-center">
+          <div class="text-3xl mb-3">💡</div>
+          <h3 class="font-display font-semibold text-white mb-2">Pattern Recognition</h3>
+          <p class="text-sm text-gray-400">Seeing thousands of spots builds intuition you can't get from theory alone.</p>
+        </div>
+
+        <div class="bg-white/5 rounded-xl p-6 text-center">
+          <div class="text-3xl mb-3">📈</div>
+          <h3 class="font-display font-semibold text-white mb-2">Building GTO Intuition</h3>
+          <p class="text-sm text-gray-400">Over time, correct plays become automatic. Better decisions, faster.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Proof / Leaderboards -->
+  <section class="py-20 md:py-28">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 animate-on-scroll">
+        <div class="section-badge">
+          <span class="section-badge-dot"></span>
+          Community
+        </div>
+        <h2 class="section-title">Compete. Improve. Repeat.</h2>
+        <p class="section-subtitle mx-auto">Join thousands of players building better poker habits.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-6 text-center max-w-3xl mx-auto">
+        <div class="bg-white rounded-xl p-8 shadow-card border border-gray-100">
+          <div class="text-4xl font-bold text-poker-green mb-2">100+</div>
+          <p class="text-gray-500 font-medium">Day Streaks</p>
+          <p class="text-sm text-gray-400 mt-1">Players in the "100 Club"</p>
+        </div>
+        <div class="bg-white rounded-xl p-8 shadow-card border border-gray-100">
+          <div class="text-4xl font-bold text-poker-gold mb-2">Daily</div>
+          <p class="text-gray-500 font-medium">Leaderboards</p>
+          <p class="text-sm text-gray-400 mt-1">Compete for top scores</p>
+        </div>
+        <div class="bg-white rounded-xl p-8 shadow-card border border-gray-100">
+          <div class="text-4xl font-bold text-poker-green mb-2">10K+</div>
+          <p class="text-gray-500 font-medium">Active Players</p>
+          <p class="text-sm text-gray-400 mt-1">Growing community</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" class="py-20 md:py-28 bg-white border-t border-gray-100">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 animate-on-scroll">
+        <h2 class="section-title">Frequently asked questions</h2>
+        <p class="section-subtitle mx-auto">Everything you need to know about Daily 10.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-card border border-gray-100 divide-y divide-gray-100 animate-on-scroll">
+        <!-- FAQ Item 1 -->
+        <div class="faq-item">
+          <button class="faq-question px-6" aria-expanded="false">
+            <span class="font-display">How long does daily practice take?</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p class="px-6 pb-6 text-gray-500 leading-relaxed">
+              The Daily 10 takes about 5 minutes to complete. It's designed to fit into your morning routine or any spare moment during the day—on your commute, during a break, or before bed.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 2 -->
+        <div class="faq-item">
+          <button class="faq-question px-6" aria-expanded="false">
+            <span class="font-display">Is Stack Poker free?</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p class="px-6 pb-6 text-gray-500 leading-relaxed">
+              Yes, Stack Poker is free to download and play. The Daily 10 puzzles are completely free. Deeper GTO analysis and insights can be unlocked as you practice.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 3 -->
+        <div class="faq-item">
+          <button class="faq-question px-6" aria-expanded="false">
+            <span class="font-display">What is GTO poker?</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p class="px-6 pb-6 text-gray-500 leading-relaxed">
+              GTO stands for "Game Theory Optimal"—a mathematically balanced poker strategy that cannot be exploited. While no human plays perfect GTO, understanding it helps you make better decisions and identify when opponents deviate from optimal play.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 4 -->
+        <div class="faq-item">
+          <button class="faq-question px-6" aria-expanded="false">
+            <span class="font-display">How does the scoring work?</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p class="px-6 pb-6 text-gray-500 leading-relaxed">
+              You earn points for matching the GTO-correct action, with bonus points for accuracy on close decisions. Mixed strategy spots (where multiple actions are correct at different frequencies) reward you based on how often GTO takes your chosen action.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download CTA Section -->
+  <section class="py-20 md:py-24 bg-poker-green relative overflow-hidden">
+    <!-- Subtle pattern overlay -->
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 left-1/4 w-64 h-64 bg-white/20 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-1/4 w-48 h-48 bg-poker-gold/30 rounded-full blur-3xl"></div>
+    </div>
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-4">Start Your Daily Practice</h2>
+      <p class="text-white/70 text-lg mb-8 max-w-md mx-auto">Free to play. Insights unlock with practice.</p>
+      <a href="https://apps.apple.com/us/app/stack-poker-bankroll-tracker/id6745683972" target="_blank" rel="noopener noreferrer" class="btn-white">
+        <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+        </svg>
+        Download on the App Store
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-14">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <a href="/" class="font-display text-xl font-semibold hover:text-gray-300 transition-colors">Stack Poker</a>
+        </div>
+        <div class="flex items-center gap-8">
+          <a href="/privacy" class="text-gray-400 hover:text-white transition-colors text-sm">Privacy</a>
+          <a href="/support" class="text-gray-400 hover:text-white transition-colors text-sm">Support</a>
+        </div>
+      </div>
+      <div class="mt-10 pt-8 border-t border-gray-800/60 text-center md:text-left">
+        <p class="text-gray-500 text-sm">&copy; 2025 StackFlow Inc. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

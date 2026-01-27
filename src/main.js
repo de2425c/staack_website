@@ -1,4 +1,22 @@
 import './style.css'
+import Lenis from 'lenis'
+
+// Initialize Lenis for smooth, snappy scrolling
+const lenis = new Lenis({
+  duration: 1.2,           // Scroll duration (slower = smoother)
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential ease-out for snappy feel
+  orientation: 'vertical',
+  smoothWheel: true,
+  wheelMultiplier: 1,
+  touchMultiplier: 2,
+})
+
+// Animation frame loop for Lenis
+function raf(time) {
+  lenis.raf(time)
+  requestAnimationFrame(raf)
+}
+requestAnimationFrame(raf)
 
 // Mobile menu toggle
 const mobileMenuBtn = document.getElementById('mobile-menu-btn')
@@ -25,6 +43,16 @@ if (mobileMenuBtn && mobileMenu) {
   })
 }
 
+// Mobile features submenu toggle
+const mobileFeaturesToggle = document.getElementById('mobile-features-toggle')
+const mobileFeaturesSection = mobileFeaturesToggle?.closest('.mobile-features-section')
+
+if (mobileFeaturesToggle && mobileFeaturesSection) {
+  mobileFeaturesToggle.addEventListener('click', () => {
+    mobileFeaturesSection.classList.toggle('open')
+  })
+}
+
 // FAQ Accordion
 const faqItems = document.querySelectorAll('.faq-item')
 
@@ -48,7 +76,7 @@ faqItems.forEach(item => {
   })
 })
 
-// Smooth scroll for anchor links (fallback for older browsers)
+// Smooth scroll for anchor links using Lenis
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function (e) {
     const href = this.getAttribute('href')
@@ -57,9 +85,29 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     const target = document.querySelector(href)
     if (target) {
       e.preventDefault()
-      target.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
+      lenis.scrollTo(target, {
+        offset: -100, // Account for fixed header
+        duration: 1.2,
+      })
+
+      // Close mobile menu if open
+      if (mobileMenu?.classList.contains('open')) {
+        mobileMenu.classList.remove('open')
+        document.body.style.overflow = ''
+      }
+    }
+  })
+})
+
+// Handle dropdown item clicks (for desktop dropdown)
+document.querySelectorAll('.dropdown-item').forEach(item => {
+  item.addEventListener('click', function (e) {
+    const href = this.getAttribute('href')
+    if (href && href.startsWith('#')) {
+      e.preventDefault()
+      lenis.scrollTo(href, {
+        offset: -100,
+        duration: 1.2,
       })
     }
   })

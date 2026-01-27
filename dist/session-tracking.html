@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Track poker sessions in seconds. Log stakes, location, and results. Visualize your bankroll with analytics, spot leaks, and see your true win rate. Free iOS app.">
+  <title>Poker Session Tracker | Bankroll Analytics & Results - Stack Poker</title>
+  <link rel="canonical" href="https://stackpoker.gg/session-tracking">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://stackpoker.gg/session-tracking">
+  <meta property="og:title" content="Poker Session Tracker | Bankroll Analytics & Results - Stack Poker">
+  <meta property="og:description" content="Track poker sessions in seconds. Log stakes, location, and results. Visualize your bankroll with analytics.">
+  <meta property="og:image" content="https://stackpoker.gg/images/og-image.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://stackpoker.gg/session-tracking">
+  <meta name="twitter:title" content="Poker Session Tracker | Bankroll Analytics & Results - Stack Poker">
+  <meta name="twitter:description" content="Track poker sessions in seconds. Log stakes, location, and results. Visualize your bankroll with analytics.">
+  <meta name="twitter:image" content="https://stackpoker.gg/images/og-image.png">
+
+  <!-- Structured Data - Software Application -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Stack Poker",
+    "operatingSystem": "iOS",
+    "applicationCategory": "GameApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "Poker session tracking app with bankroll analytics and results visualization",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "100"
+    }
+  }
+  </script>
+
+  <!-- FAQ Schema for Rich Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Why should I track poker sessions?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Tracking sessions helps you know your true win rate, find leaks in your game, and make data-driven decisions about which stakes and games to play. Without data, you're guessing—and guessing costs money."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does Stack Poker session tracking work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "One tap to start a session. Set your stakes and location, then play. The timer runs automatically. Update your stack anytime, add rebuys, and take notes. When you're done, end the session and see your results instantly."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the session tracker free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, Stack Poker's session tracking is completely free to use. Download the app and start logging your sessions immediately with no cost or subscription required."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What analytics does Stack Poker provide?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Stack Poker provides win rate calculations, hourly rate tracking, profit charts over time, and the ability to filter results by game type, stakes, and location. See exactly where you're winning and where you're leaking."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♠️</text></svg>">
+  <script type="module" crossorigin src="/assets/main-Dn0CpoXV.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-DSQhOXc6.css">
+</head>
+<body class="bg-bg-warm">
+  <!-- Header -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm transition-all duration-300 border-b border-transparent">
+    <nav class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <a href="/" class="flex items-center">
+          <img src="/images/logo.png" alt="Stack Poker" class="h-8 invert header-logo">
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="/#features" class="nav-link">Features</a>
+          <a href="/#faq" class="nav-link">FAQ</a>
+          <a href="https://apps.apple.com/us/app/stack-poker-bankroll-tracker/id6745683972" target="_blank" rel="noopener noreferrer" class="btn-primary text-sm">Download</a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+          <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="mobile-menu md:hidden">
+    <div class="flex items-center justify-between p-4 border-b border-gray-100">
+      <img src="/images/logo.png" alt="Stack Poker" class="h-8 invert header-logo">
+      <button id="mobile-menu-close" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="flex flex-col p-4 space-y-4">
+      <a href="/#features" class="mobile-menu-link text-lg font-medium text-gray-700 hover:text-poker-green py-2">Features</a>
+      <a href="/#faq" class="mobile-menu-link text-lg font-medium text-gray-700 hover:text-poker-green py-2">FAQ</a>
+      <a href="https://apps.apple.com/us/app/stack-poker-bankroll-tracker/id6745683972" target="_blank" rel="noopener noreferrer" class="mobile-menu-link btn-primary text-center mt-4">Download</a>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="pt-24 pb-20 md:pt-32 md:pb-28 overflow-hidden">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <!-- Hero Content -->
+        <div class="text-center lg:text-left">
+          <div class="inline-flex items-center px-4 py-2 rounded-full bg-poker-green/10 text-poker-green text-sm font-medium mb-6">
+            Session Tracking
+          </div>
+
+          <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.2] text-balance tracking-tight gradient-text pb-2">
+            Track Every Session. See Your True Win Rate.
+          </h1>
+          <p class="mt-6 text-lg sm:text-xl text-gray-500 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+            Log sessions in seconds. Visualize your results. No spreadsheets.
+          </p>
+
+          <div class="mt-10 flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+            <a href="https://apps.apple.com/us/app/stack-poker-bankroll-tracker/id6745683972" target="_blank" rel="noopener noreferrer" class="btn-primary w-full sm:w-auto">
+              <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+              </svg>
+              Download on the App Store
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero Visual - Phone Mockup -->
+        <div class="relative flex justify-center lg:justify-end">
+          <div id="hero-phone" class="phone-frame w-56 sm:w-64 md:w-72 parallax-phone">
+            <div class="phone-screen aspect-[9/19.5]">
+              <img src="/images/track.png" alt="Poker session tracking interface" class="w-full h-full object-cover">
+            </div>
+          </div>
+          <!-- Decorative elements -->
+          <div class="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-poker-green/5 rounded-full blur-3xl"></div>
+          <div class="absolute -z-10 top-1/3 right-0 w-32 h-32 bg-poker-gold/10 rounded-full blur-2xl"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="py-16 md:py-20 bg-white border-y border-gray-100">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <h2 class="font-display text-xl md:text-2xl font-semibold text-gray-900">How Session Tracking Works</h2>
+      </div>
+      <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-4 lg:gap-6">
+        <!-- Step 1 -->
+        <div class="how-it-works-step flex-1 max-w-xs">
+          <div class="step-number">1</div>
+          <h3 class="font-display font-semibold text-gray-900 mb-1">Start a Session</h3>
+          <p class="text-sm text-gray-500">Tap to begin, set stakes and location</p>
+        </div>
+
+        <div class="step-connector"></div>
+
+        <!-- Step 2 -->
+        <div class="how-it-works-step flex-1 max-w-xs">
+          <div class="step-number">2</div>
+          <h3 class="font-display font-semibold text-gray-900 mb-1">Play Your Game</h3>
+          <p class="text-sm text-gray-500">Timer runs, update stack anytime</p>
+        </div>
+
+        <div class="step-connector"></div>
+
+        <!-- Step 3 -->
+        <div class="how-it-works-step flex-1 max-w-xs">
+          <div class="step-number">3</div>
+          <h3 class="font-display font-semibold text-gray-900 mb-1">See Your Stats</h3>
+          <p class="text-sm text-gray-500">Instant profit/loss, lifetime analytics</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Session Logging Features -->
+  <section class="py-20 md:py-28">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 animate-on-scroll">
+        <div class="section-badge">
+          <span class="section-badge-dot"></span>
+          Session Logging
+        </div>
+        <h2 class="section-title">Log Everything That Matters</h2>
+        <p class="section-subtitle mx-auto">Capture the details you need without the hassle of spreadsheets.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-xl p-6 shadow-card border border-gray-100">
+          <div class="w-10 h-10 rounded-lg bg-poker-green/10 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-poker-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-semibold text-gray-900 mb-2">Quick Start</h3>
+          <p class="text-sm text-gray-500">One tap to start tracking. Get in the game fast.</p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-card border border-gray-100">
+          <div class="w-10 h-10 rounded-lg bg-poker-gold/10 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-poker-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-semibold text-gray-900 mb-2">Full Details</h3>
+          <p class="text-sm text-gray-500">Stakes, buy-in, location, game type—capture it all.</p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-card border border-gray-100">
+          <div class="w-10 h-10 rounded-lg bg-poker-green/10 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-poker-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-semibold text-gray-900 mb-2">Live Updates</h3>
+          <p class="text-sm text-gray-500">Update stack, add rebuys, take notes mid-session.</p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-card border border-gray-100">
+          <div class="w-10 h-10 rounded-lg bg-poker-gold/10 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-poker-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-semibold text-gray-900 mb-2">Auto Timer</h3>
+          <p class="text-sm text-gray-500">Track session duration automatically.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Analytics Section -->
+  <section class="py-20 md:py-28 bg-white border-y border-gray-100">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 animate-on-scroll">
+        <div class="section-badge">
+          <span class="section-badge-dot"></span>
+          Analytics
+        </div>
+        <h2 class="section-title">Know Your Numbers</h2>
+        <p class="section-subtitle mx-auto">Turn raw data into actionable insights.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-16">
+        <!-- Phone mockup -->
+        <div class="relative flex justify-center order-2 lg:order-1">
+          <div class="phone-frame w-56 sm:w-64 md:w-72">
+            <div class="phone-screen aspect-[9/19.5]">
+              <img src="/images/analytics.png" alt="Poker analytics dashboard showing profit charts and win rate" class="w-full h-full object-cover">
+            </div>
+          </div>
+          <div class="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-poker-green/5 rounded-full blur-3xl"></div>
+        </div>
+
+        <!-- Feature cards -->
+        <div class="grid sm:grid-cols-2 gap-4 order-1 lg:order-2">
+          <div class="bg-gray-50 rounded-xl p-6 border border-gray-100">
+            <div class="w-10 h-10 rounded-lg bg-poker-green/10 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-poker-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h3 class="font-display font-semibold text-gray-900 mb-2">Win Rate</h3>
+            <p class="text-sm text-gray-500">See your true winning percentage across all sessions.</p>
+          </div>
+
+          <div class="bg-gray-50 rounded-xl p-6 border border-gray-100">
+            <div class="w-10 h-10 rounded-lg bg-poker-gold/10 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-poker-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h3 class="font-display font-semibold text-gray-900 mb-2">Hourly Rate</h3>
+            <p class="text-sm text-gray-500">Track your $/hour over time to measure progress.</p>
+          </div>
+
+          <div class="bg-gray-50 rounded-xl p-6 border border-gray-100">
+            <div class="w-10 h-10 rounded-lg bg-poker-green/10 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-poker-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+              </svg>
+            </div>
+            <h3 class="font-display font-semibold text-gray-900 mb-2">Profit Charts</h3>
+            <p class="text-sm text-gray-500">Visualize results with graphs that show trends.</p>
+          </div>
+
+          <div class="bg-gray-50 rounded-xl p-6 border border-gray-100">
+            <div class="w-10 h-10 rounded-lg bg-poker-gold/10 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-poker-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+              </svg>
+            </div>
+            <h3 class="font-display font-semibold text-gray-900 mb-2">Filter by Game</h3>
+            <p class="text-sm text-gray-500">Analyze by stakes, location, or game type.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Track Section -->
+  <section class="py-16 md:py-20 bg-gray-900">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <h2 class="font-display text-2xl md:text-3xl font-bold text-white mb-3">Stop Guessing. Start Knowing.</h2>
+        <p class="text-gray-400 max-w-xl mx-auto">Data-driven players make better decisions.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <div class="bg-white/5 rounded-xl p-6 text-center">
+          <div class="text-3xl mb-3">&#128269;</div>
+          <h3 class="font-display font-semibold text-white mb-2">Find Your Leaks</h3>
+          <p class="text-sm text-gray-400">Spot patterns before they drain your bankroll.</p>
+        </div>
+
+        <div class="bg-white/5 rounded-xl p-6 text-center">
+          <div class="text-3xl mb-3">&#127919;</div>
+          <h3 class="font-display font-semibold text-white mb-2">Know Your Games</h3>
+          <p class="text-sm text-gray-400">See which stakes and locations you actually beat.</p>
+        </div>
+
+        <div class="bg-white/5 rounded-xl p-6 text-center">
+          <div class="text-3xl mb-3">&#128200;</div>
+          <h3 class="font-display font-semibold text-white mb-2">Decide with Data</h3>
+          <p class="text-sm text-gray-400">Make choices based on facts, not feelings.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Proof / Stats -->
+  <section class="py-20 md:py-28">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 animate-on-scroll">
+        <div class="section-badge">
+          <span class="section-badge-dot"></span>
+          Community
+        </div>
+        <h2 class="section-title">Join Thousands of Players</h2>
+        <p class="section-subtitle mx-auto">Serious players track their results.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-6 text-center max-w-3xl mx-auto">
+        <div class="bg-white rounded-xl p-8 shadow-card border border-gray-100">
+          <div class="text-4xl font-bold text-poker-green mb-2">100K+</div>
+          <p class="text-gray-500 font-medium">Sessions Tracked</p>
+          <p class="text-sm text-gray-400 mt-1">And counting</p>
+        </div>
+        <div class="bg-white rounded-xl p-8 shadow-card border border-gray-100">
+          <div class="text-4xl font-bold text-poker-gold mb-2">10K+</div>
+          <p class="text-gray-500 font-medium">Active Players</p>
+          <p class="text-sm text-gray-400 mt-1">Growing community</p>
+        </div>
+        <div class="bg-white rounded-xl p-8 shadow-card border border-gray-100">
+          <div class="text-4xl font-bold text-poker-green mb-2">4.8</div>
+          <p class="text-gray-500 font-medium">App Store Rating</p>
+          <p class="text-sm text-gray-400 mt-1">Highly rated</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" class="py-20 md:py-28 bg-white border-t border-gray-100">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 animate-on-scroll">
+        <h2 class="section-title">Frequently asked questions</h2>
+        <p class="section-subtitle mx-auto">Everything you need to know about session tracking.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-card border border-gray-100 divide-y divide-gray-100 animate-on-scroll">
+        <!-- FAQ Item 1 -->
+        <div class="faq-item">
+          <button class="faq-question px-6" aria-expanded="false">
+            <span class="font-display">Why should I track poker sessions?</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p class="px-6 pb-6 text-gray-500 leading-relaxed">
+              Tracking sessions helps you know your true win rate, find leaks in your game, and make data-driven decisions about which stakes and games to play. Without data, you're guessing—and guessing costs money.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 2 -->
+        <div class="faq-item">
+          <button class="faq-question px-6" aria-expanded="false">
+            <span class="font-display">How does Stack Poker session tracking work?</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p class="px-6 pb-6 text-gray-500 leading-relaxed">
+              One tap to start a session. Set your stakes and location, then play. The timer runs automatically. Update your stack anytime, add rebuys, and take notes. When you're done, end the session and see your results instantly.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 3 -->
+        <div class="faq-item">
+          <button class="faq-question px-6" aria-expanded="false">
+            <span class="font-display">Is the session tracker free?</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p class="px-6 pb-6 text-gray-500 leading-relaxed">
+              Yes, Stack Poker's session tracking is completely free to use. Download the app and start logging your sessions immediately with no cost or subscription required.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 4 -->
+        <div class="faq-item">
+          <button class="faq-question px-6" aria-expanded="false">
+            <span class="font-display">What analytics does Stack Poker provide?</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p class="px-6 pb-6 text-gray-500 leading-relaxed">
+              Stack Poker provides win rate calculations, hourly rate tracking, profit charts over time, and the ability to filter results by game type, stakes, and location. See exactly where you're winning and where you're leaking.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download CTA Section -->
+  <section class="py-20 md:py-24 bg-poker-green relative overflow-hidden">
+    <!-- Subtle pattern overlay -->
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 left-1/4 w-64 h-64 bg-white/20 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-1/4 w-48 h-48 bg-poker-gold/30 rounded-full blur-3xl"></div>
+    </div>
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-4">Start Tracking Your Sessions</h2>
+      <p class="text-white/70 text-lg mb-8 max-w-md mx-auto">Free to use. No spreadsheets required.</p>
+      <a href="https://apps.apple.com/us/app/stack-poker-bankroll-tracker/id6745683972" target="_blank" rel="noopener noreferrer" class="btn-white">
+        <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+        </svg>
+        Download on the App Store
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-14">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <a href="/" class="font-display text-xl font-semibold hover:text-gray-300 transition-colors">Stack Poker</a>
+        </div>
+        <div class="flex items-center gap-8">
+          <a href="/privacy" class="text-gray-400 hover:text-white transition-colors text-sm">Privacy</a>
+          <a href="/support" class="text-gray-400 hover:text-white transition-colors text-sm">Support</a>
+        </div>
+      </div>
+      <div class="mt-10 pt-8 border-t border-gray-800/60 text-center md:text-left">
+        <p class="text-gray-500 text-sm">&copy; 2025 StackFlow Inc. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

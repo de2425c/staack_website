@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Master preflop ranges with quick-fire drills. Test fold, call, or raise decisions under pressure, compete on leaderboards, and build poker instincts. Free iOS app.">
+  <title>Poker Range Training | Fast Preflop Drills & Leaderboards - Stack Poker</title>
+  <link rel="canonical" href="https://stackpoker.gg/range-training">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://stackpoker.gg/range-training">
+  <meta property="og:title" content="Poker Range Training | Fast Preflop Drills & Leaderboards">
+  <meta property="og:description" content="Master preflop ranges with quick-fire drills. Test fold, call, or raise decisions under pressure, compete on leaderboards.">
+  <meta property="og:image" content="https://stackpoker.gg/images/og-image.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://stackpoker.gg/range-training">
+  <meta name="twitter:title" content="Poker Range Training | Fast Preflop Drills & Leaderboards">
+  <meta name="twitter:description" content="Master preflop ranges with quick-fire drills. Test fold, call, or raise decisions under pressure, compete on leaderboards.">
+  <meta name="twitter:image" content="https://stackpoker.gg/images/og-image.png">
+
+  <!-- Structured Data - Software Application -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Stack Poker",
+    "operatingSystem": "iOS",
+    "applicationCategory": "GameApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "Poker range training app with preflop drills and leaderboard competition",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "100"
+    }
+  }
+  </script>
+
+  <!-- FAQ Schema for Rich Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What are poker ranges?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Poker ranges are the complete set of hands a player might hold in a given situation. Instead of putting opponents on one specific hand, skilled players think in ranges—considering all possible holdings based on position, action, and tendencies."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does Range Rush work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Range Rush presents you with preflop spots and challenges you to make the correct decision—fold, call, or raise—under time pressure. After each decision, you see the GTO-optimal play instantly, building your preflop instincts through rapid repetition."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Range Rush free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, Range Rush is completely free to play. Download Stack Poker and start drilling your preflop ranges immediately with no cost or subscription required."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I improve my preflop game?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Consistent practice with immediate feedback is key. Range Rush provides thousands of preflop scenarios with instant GTO comparisons, helping you internalize correct plays until they become automatic."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♠️</text></svg>">
+  <script type="module" crossorigin src="/assets/main-Dn0CpoXV.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-DSQhOXc6.css">
+</head>
+<body class="bg-bg-warm">
+  <!-- Header -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm transition-all duration-300 border-b border-transparent">
+    <nav class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <a href="/" class="flex items-center">
+          <img src="/images/logo.png" alt="Stack Poker" class="h-8 invert header-logo">
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="/#features" class="nav-link">Features</a>
+          <a href="/#faq" class="nav-link">FAQ</a>
+          <a href="https://apps.apple.com/us/app/stack-poker-bankroll-tracker/id6745683972" target="_blank" rel="noopener noreferrer" class="btn-primary text-sm">Download</a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+          <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="mobile-menu md:hidden">
+    <div class="flex items-center justify-between p-4 border-b border-gray-100">
+      <img src="/images/logo.png" alt="Stack Poker" class="h-8 invert header-logo">
+      <button id="mobile-menu-close" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="flex flex-col p-4 space-y-4">
+      <a href="/#features" class="mobile-menu-link text-lg font-medium text-gray-700 hover:text-poker-green py-2">Features</a>
+      <a href="/#faq" class="mobile-menu-link text-lg font-medium text-gray-700 hover:text-poker-green py-2">FAQ</a>
+      <a href="https://apps.apple.com/us/app/stack-poker-bankroll-tracker/id6745683972" target="_blank" rel="noopener noreferrer" class="mobile-menu-link btn-primary text-center mt-4">Download</a>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="pt-24 pb-20 md:pt-32 md:pb-28 overflow-hidden">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <!-- Hero Content -->
+        <div class="text-center lg:text-left">
+          <div class="inline-flex items-center px-4 py-2 rounded-full bg-poker-green/10 text-poker-green text-sm font-medium mb-6">
+            Range Rush Feature
+          </div>
+
+          <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.2] text-balance tracking-tight gradient-text pb-2">
+            Master Poker Ranges in Minutes a Day
+          </h1>
+          <p class="mt-6 text-lg sm:text-xl text-gray-500 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+            Quick-fire preflop drills. Instant feedback. Leaderboard competition.
+          </p>
+
+          <div class="mt-10 flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+            <a href="https://apps.apple.com/us/app/stack-poker-bankroll-tracker/id6745683972" target="_blank" rel="noopener noreferrer" class="btn-primary w-full sm:w-auto">
+              <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+              </svg>
+              Download on the App Store
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero Visual - Phone Mockup -->
+        <div class="relative flex justify-center lg:justify-end">
+          <div id="hero-phone" class="phone-frame w-56 sm:w-64 md:w-72 parallax-phone">
+            <div class="phone-screen aspect-[9/19.5]">
+              <img src="/images/range_rush.png" alt="Range Rush poker range training drills" class="w-full h-full object-cover">
+            </div>
+          </div>
+          <!-- Decorative elements -->
+          <div class="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-poker-green/5 rounded-full blur-3xl"></div>
+          <div class="absolute -z-10 top-1/3 right-0 w-32 h-32 bg-poker-gold/10 rounded-full blur-2xl"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How Range Rush Works -->
+  <section class="py-16 md:py-20 bg-white border-y border-gray-100">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <h2 class="font-display text-xl md:text-2xl font-semibold text-gray-900">How Range Rush Works</h2>
+      </div>
+      <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-4 lg:gap-6">
+        <!-- Step 1 -->
+        <div class="how-it-works-step flex-1 max-w-xs">
+          <div class="step-number">1</div>
+          <h3 class="font-display font-semibold text-gray-900 mb-1">See a Preflop Spot</h3>
+          <p class="text-sm text-gray-500">Position, stack depth, and action context</p>
+        </div>
+
+        <div class="step-connector"></div>
+
+        <!-- Step 2 -->
+        <div class="how-it-works-step flex-1 max-w-xs">
+          <div class="step-number">2</div>
+          <h3 class="font-display font-semibold text-gray-900 mb-1">Make Your Decision</h3>
+          <p class="text-sm text-gray-500">Fold, call, or raise under time pressure</p>
+        </div>
+
+        <div class="step-connector"></div>
+
+        <!-- Step 3 -->
+        <div class="how-it-works-step flex-1 max-w-xs">
+          <div class="step-number">3</div>
+          <h3 class="font-display font-semibold text-gray-900 mb-1">Compare to Optimal</h3>
+          <p class="text-sm text-gray-500">See the correct GTO play instantly</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Ranges Matter Section -->
+  <section class="py-20 md:py-28">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 animate-on-scroll">
+        <div class="section-badge">
+          <span class="section-badge-dot"></span>
+          Fundamentals
+        </div>
+        <h2 class="section-title">Preflop Is the Foundation</h2>
+        <p class="section-subtitle mx-auto">Master your ranges and every street becomes easier.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-xl p-6 shadow-card border border-gray-100">
+          <div class="w-10 h-10 rounded-lg bg-poker-green/10 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-poker-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-semibold text-gray-900 mb-2">Position Awareness</h3>
+          <p class="text-sm text-gray-500">Learn how position changes your range—UTG vs BTN requires different hands.</p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-card border border-gray-100">
+          <div class="w-10 h-10 rounded-lg bg-poker-gold/10 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-poker-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-semibold text-gray-900 mb-2">Stack Depth Adjustments</h3>
+          <p class="text-sm text-gray-500">20bb vs 100bb—completely different ranges. Learn the nuances.</p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-card border border-gray-100">
+          <div class="w-10 h-10 rounded-lg bg-poker-green/10 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-poker-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-semibold text-gray-900 mb-2">3-Bet/4-Bet Spots</h3>
+          <p class="text-sm text-gray-500">Know when to apply pressure and which hands to use.</p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-card border border-gray-100">
+          <div class="w-10 h-10 rounded-lg bg-poker-gold/10 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-poker-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-semibold text-gray-900 mb-2">Defense Frequencies</h3>
+          <p class="text-sm text-gray-500">Stop over-folding to aggression. Learn correct defense ranges.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Speed & Competition Section -->
+  <section class="py-16 md:py-20 bg-gray-900">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <h2 class="font-display text-2xl md:text-3xl font-bold text-white mb-3">Train Fast, Compete Harder</h2>
+        <p class="text-gray-400 max-w-xl mx-auto">Build real instincts through speed and competition.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <div class="bg-white/5 rounded-xl p-6 text-center">
+          <div class="text-3xl mb-3">&#9201;</div>
+          <h3 class="font-display font-semibold text-white mb-2">Timed Decisions</h3>
+          <p class="text-sm text-gray-400">Time pressure builds the instincts you need at the table.</p>
+        </div>
+
+        <div class="bg-white/5 rounded-xl p-6 text-center">
+          <div class="text-3xl mb-3">&#127942;</div>
+          <h3 class="font-display font-semibold text-white mb-2">Daily Leaderboards</h3>
+          <p class="text-sm text-gray-400">Compete with players worldwide. See where you rank.</p>
+        </div>
+
+        <div class="bg-white/5 rounded-xl p-6 text-center">
+          <div class="text-3xl mb-3">&#128200;</div>
+          <h3 class="font-display font-semibold text-white mb-2">Track Your Accuracy</h3>
+          <p class="text-sm text-gray-400">Watch your range knowledge improve over time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Proof / Stats -->
+  <section class="py-20 md:py-28">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 animate-on-scroll">
+        <div class="section-badge">
+          <span class="section-badge-dot"></span>
+          Community
+        </div>
+        <h2 class="section-title">Join the Competition</h2>
+        <p class="section-subtitle mx-auto">Thousands of players drilling their ranges daily.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-6 text-center max-w-3xl mx-auto">
+        <div class="bg-white rounded-xl p-8 shadow-card border border-gray-100">
+          <div class="text-4xl font-bold text-poker-green mb-2">50K+</div>
+          <p class="text-gray-500 font-medium">Hands Played</p>
+          <p class="text-sm text-gray-400 mt-1">Range drills completed</p>
+        </div>
+        <div class="bg-white rounded-xl p-8 shadow-card border border-gray-100">
+          <div class="text-4xl font-bold text-poker-gold mb-2">Daily</div>
+          <p class="text-gray-500 font-medium">Leaderboards</p>
+          <p class="text-sm text-gray-400 mt-1">Fresh competition every day</p>
+        </div>
+        <div class="bg-white rounded-xl p-8 shadow-card border border-gray-100">
+          <div class="text-4xl font-bold text-poker-green mb-2">10K+</div>
+          <p class="text-gray-500 font-medium">Active Players</p>
+          <p class="text-sm text-gray-400 mt-1">Growing community</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" class="py-20 md:py-28 bg-white border-t border-gray-100">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 animate-on-scroll">
+        <h2 class="section-title">Frequently asked questions</h2>
+        <p class="section-subtitle mx-auto">Everything you need to know about Range Rush.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-card border border-gray-100 divide-y divide-gray-100 animate-on-scroll">
+        <!-- FAQ Item 1 -->
+        <div class="faq-item">
+          <button class="faq-question px-6" aria-expanded="false">
+            <span class="font-display">What are poker ranges?</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p class="px-6 pb-6 text-gray-500 leading-relaxed">
+              Poker ranges are the complete set of hands a player might hold in a given situation. Instead of putting opponents on one specific hand, skilled players think in ranges—considering all possible holdings based on position, action, and tendencies.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 2 -->
+        <div class="faq-item">
+          <button class="faq-question px-6" aria-expanded="false">
+            <span class="font-display">How does Range Rush work?</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p class="px-6 pb-6 text-gray-500 leading-relaxed">
+              Range Rush presents you with preflop spots and challenges you to make the correct decision—fold, call, or raise—under time pressure. After each decision, you see the GTO-optimal play instantly, building your preflop instincts through rapid repetition.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 3 -->
+        <div class="faq-item">
+          <button class="faq-question px-6" aria-expanded="false">
+            <span class="font-display">Is Range Rush free?</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p class="px-6 pb-6 text-gray-500 leading-relaxed">
+              Yes, Range Rush is completely free to play. Download Stack Poker and start drilling your preflop ranges immediately with no cost or subscription required.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 4 -->
+        <div class="faq-item">
+          <button class="faq-question px-6" aria-expanded="false">
+            <span class="font-display">How do I improve my preflop game?</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p class="px-6 pb-6 text-gray-500 leading-relaxed">
+              Consistent practice with immediate feedback is key. Range Rush provides thousands of preflop scenarios with instant GTO comparisons, helping you internalize correct plays until they become automatic.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download CTA Section -->
+  <section class="py-20 md:py-24 bg-poker-green relative overflow-hidden">
+    <!-- Subtle pattern overlay -->
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 left-1/4 w-64 h-64 bg-white/20 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-1/4 w-48 h-48 bg-poker-gold/30 rounded-full blur-3xl"></div>
+    </div>
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-4">Start Training Your Ranges</h2>
+      <p class="text-white/70 text-lg mb-8 max-w-md mx-auto">Free to play. No subscription required.</p>
+      <a href="https://apps.apple.com/us/app/stack-poker-bankroll-tracker/id6745683972" target="_blank" rel="noopener noreferrer" class="btn-white">
+        <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+        </svg>
+        Download on the App Store
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-14">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <a href="/" class="font-display text-xl font-semibold hover:text-gray-300 transition-colors">Stack Poker</a>
+        </div>
+        <div class="flex items-center gap-8">
+          <a href="/privacy" class="text-gray-400 hover:text-white transition-colors text-sm">Privacy</a>
+          <a href="/support" class="text-gray-400 hover:text-white transition-colors text-sm">Support</a>
+        </div>
+      </div>
+      <div class="mt-10 pt-8 border-t border-gray-800/60 text-center md:text-left">
+        <p class="text-gray-500 text-sm">&copy; 2025 StackFlow Inc. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
