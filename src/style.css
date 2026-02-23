@@ -117,9 +117,21 @@
 
   /* Dropdown Menu */
   .dropdown-menu {
-    @apply absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-lg
+    @apply absolute top-full left-0 w-56 bg-white rounded-xl shadow-lg
            border border-gray-100 opacity-0 invisible pointer-events-none
            transform -translate-y-2 transition-all duration-200 z-50;
+    margin-top: 0;
+    padding-top: 8px;
+    background-clip: padding-box;
+  }
+
+  .dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 0;
+    right: 0;
+    height: 20px;
   }
 
   .group:hover .dropdown-menu {
