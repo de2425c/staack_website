@@ -1,5 +1,5 @@
-import { getTableStyles } from './styles-table';
-import { getOverlayStyles } from './styles-overlay';
+import { getTableStyles } from './styles-table.js';
+import { getOverlayStyles } from './styles-overlay.js';
 
 const getBaseStyles = (): string => `
 :root {
@@ -28,22 +28,25 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   background: var(--background);
   color: var(--text-primary);
   font-family: -apple-system, 'SF Pro Display', 'SF Pro Text', BlinkMacSystemFont, system-ui, sans-serif;
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
 #app {
   max-width: 100%;
+  height: 100%;
   margin: 0 auto;
-  padding: max(16px, env(safe-area-inset-top)) 16px 140px;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
   position: relative;
-  min-height: 100vh;
+  overflow: hidden;
 }
 
 .header {

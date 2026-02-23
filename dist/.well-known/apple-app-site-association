@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "RQVKDAF979.gg.stackpoker.stack",
+        "paths": [
+          "/daily10/challenge/*",
+          "/hands/*"
+        ]
+      }
+    ]
+  }
+}

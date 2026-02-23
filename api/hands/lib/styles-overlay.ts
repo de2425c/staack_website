@@ -9,38 +9,32 @@ export const getOverlayStyles = (): string => `
   z-index: 100;
 }
 
-.replay-btn {
+.control-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   width: 100%;
-  max-width: 320px;
+  max-width: 280px;
   margin: 0 auto;
-  padding: 14px 24px;
-  background: var(--surface-raised);
-  border: 1px solid var(--border-subtle);
-  border-radius: 14px;
-  color: var(--text-primary);
-  font-size: 16px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease;
 }
 
-.replay-btn:disabled {
-  opacity: 0.5;
+.control-btn:disabled {
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
-.replay-btn:not(:disabled):active {
-  transform: scale(0.98);
-  background: var(--surface);
-}
-
-.replay-btn svg {
-  width: 18px;
-  height: 18px;
+.control-btn:active:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .win-overlay {
@@ -195,10 +189,18 @@ export const getOverlayStyles = (): string => `
 
 @media (min-width: 768px) {
   .cta-overlay {
+    justify-content: center;
     align-items: center;
   }
 
+  .cta-backdrop {
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
   .cta-card {
+    position: relative;
     border-radius: 24px;
     max-width: 520px;
     padding: 40px 48px;

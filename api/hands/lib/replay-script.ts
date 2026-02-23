@@ -1,4 +1,6 @@
 export const getReplayScript = (): string => `
+const HAND = JSON.parse(document.getElementById('replayData').textContent);
+
 const SEAT_POSITIONS = [
   { top: 90, left: 50 },
   { top: 70, left: 10 },

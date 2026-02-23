@@ -9,6 +9,7 @@ const AppleIcon: React.FC = () => (
 export const CtaOverlay: React.FC = () => {
   return (
     <div className="cta-overlay" id="ctaOverlay">
+      <div className="cta-backdrop" />
       <div className="cta-card">
         <div className="cta-handle" />
         <div className="cta-logo">

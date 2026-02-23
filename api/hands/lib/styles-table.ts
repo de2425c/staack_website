@@ -175,49 +175,62 @@ export const getTableStyles = (): string => `
 }
 
 .card {
-  width: 28px;
-  height: 40px;
+  width: 32px;
+  height: 45px;
   border-radius: 5px;
-  background: #fff;
+  background: rgb(46, 46, 46);
+  border: 0.5px solid rgba(255,255,255,0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  gap: -2px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-.card .rank { font-size: 14px; line-height: 1; }
-.card .suit { font-size: 12px; line-height: 1; }
+.card .rank {
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 700;
+  color: #fff;
+}
 
-.card.hearts, .card.diamonds { color: #E53E3E; }
-.card.clubs, .card.spades { color: #1A202C; }
+.card .suit {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.card.hearts .suit { color: #FF5A5F; }
+.card.diamonds .suit { color: #5AC8FA; }
+.card.spades .suit { color: rgba(255,255,255,0.9); }
+.card.clubs .suit { color: #4CD964; }
 
 .card-back {
-  width: 24px;
-  height: 34px;
+  width: 28px;
+  height: 40px;
   border-radius: 4px;
-  background: linear-gradient(135deg, #4A5568 0%, #2D3748 100%);
+  background: rgb(38, 38, 38);
+  border: 0.5px solid rgba(255,255,255,0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .card-back img {
-  width: 14px;
-  height: 14px;
-  opacity: 0.5;
+  width: 16px;
+  height: 16px;
+  opacity: 0.6;
 }
 
 .hero-cards .card {
-  width: 38px;
-  height: 54px;
+  width: 42px;
+  height: 59px;
   border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.4);
 }
 
-.hero-cards .card .rank { font-size: 18px; }
+.hero-cards .card .rank { font-size: 21px; }
 .hero-cards .card .suit { font-size: 16px; }
 
 .center-content {
@@ -238,16 +251,17 @@ export const getTableStyles = (): string => `
 }
 
 .board-card {
-  width: 42px;
-  height: 59px;
-  border-radius: 6px;
-  background: #fff;
+  width: 44px;
+  height: 62px;
+  border-radius: 7px;
+  background: rgb(46, 46, 46);
+  border: 0.5px solid rgba(255,255,255,0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+  gap: -2px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
   opacity: 0;
   transform: scale(0.8);
   transition: opacity 0.3s, transform 0.3s;
@@ -258,11 +272,22 @@ export const getTableStyles = (): string => `
   transform: scale(1);
 }
 
-.board-card .rank { font-size: 16px; line-height: 1; }
-.board-card .suit { font-size: 14px; line-height: 1; }
+.board-card .rank {
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 700;
+  color: #fff;
+}
 
-.board-card.hearts, .board-card.diamonds { color: #E53E3E; }
-.board-card.clubs, .board-card.spades { color: #1A202C; }
+.board-card .suit {
+  font-size: 17px;
+  line-height: 1;
+}
+
+.board-card.hearts .suit { color: #FF5A5F; }
+.board-card.diamonds .suit { color: #5AC8FA; }
+.board-card.spades .suit { color: rgba(255,255,255,0.9); }
+.board-card.clubs .suit { color: #4CD964; }
 
 .board-placeholder {
   width: 42px;
@@ -381,15 +406,15 @@ export const getTableStyles = (): string => `
 }
 
 @media (max-width: 380px) {
-  .card { width: 24px; height: 34px; }
-  .card .rank { font-size: 12px; }
+  .card { width: 26px; height: 36px; }
+  .card .rank { font-size: 13px; }
   .card .suit { font-size: 10px; }
-  .card-back { width: 20px; height: 28px; }
-  .board-card { width: 36px; height: 50px; }
-  .board-card .rank { font-size: 14px; }
-  .board-card .suit { font-size: 12px; }
-  .hero-cards .card { width: 34px; height: 48px; }
-  .hero-cards .card .rank { font-size: 16px; }
+  .card-back { width: 24px; height: 34px; }
+  .board-card { width: 38px; height: 53px; }
+  .board-card .rank { font-size: 19px; }
+  .board-card .suit { font-size: 15px; }
+  .hero-cards .card { width: 36px; height: 50px; }
+  .hero-cards .card .rank { font-size: 18px; }
   .hero-cards .card .suit { font-size: 14px; }
 }
 `;

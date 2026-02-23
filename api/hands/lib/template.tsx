@@ -1,8 +1,8 @@
-import React from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
-import { getReplayStyles } from './styles';
-import { getReplayScript } from './replay-script';
-import { ReplayPage } from '../components';
+import React from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { getReplayStyles } from "./styles.js";
+import { getReplayScript } from "./replay-script.js";
+import { ReplayPage } from "../components/index.js";
 
 interface TemplateParams {
   id: string;
@@ -18,15 +18,7 @@ export const buildHandReplayPage = (params: TemplateParams): string => {
   const script = getReplayScript();
 
   const html = renderToStaticMarkup(
-    <ReplayPage
-      id={id}
-      title={title}
-      description={description}
-      ogImageUrl={ogImageUrl}
-      replayJson={replayJson}
-      styles={styles}
-      script={script}
-    />
+    <ReplayPage id={id} title={title} description={description} ogImageUrl={ogImageUrl} replayJson={replayJson} styles={styles} script={script} />,
   );
 
   return `<!DOCTYPE html>${html}`;

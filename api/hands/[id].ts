@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import type { BotHandLog, SharedHand, WebReplayData } from './lib/types';
-import { buildHandReplayPage } from './lib/template';
+import type { BotHandLog, SharedHand, WebReplayData } from './lib/types.js';
+import { buildHandReplayPage } from './lib/template.js';
 
 const getDb = () => {
   if (getApps().length === 0) {
