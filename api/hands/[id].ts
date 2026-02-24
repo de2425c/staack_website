@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import type { BotHandLog, SharedHand, WebReplayData } from './lib/types';
+import type { BotHandLog, SharedHand, WebReplayData, PokerHand } from './lib/types';
 import { buildHandReplayPage } from './lib/template';
 
 const getDb = () => {
@@ -82,28 +82,94 @@ const transformHandForWeb = (hand: BotHandLog, shared: SharedHand): WebReplayDat
   };
 };
 
-const formatCents = (cents: number): string => {
-  const dollars = Math.abs(cents) / 100;
-  const sign = cents >= 0 ? '+' : '-';
+// Transform poker_hands collection format to WebReplayData
+const transformPokerHandForWeb = (hand: PokerHand, handId: string, shared: SharedHand): WebReplayData => {
+  const heroSeat = hand.heroSeat;
+
+  // Derive button seat from player positions (BTN player)
+  const btnPlayer = hand.players.find(p => p.displayName === 'BTN');
+  const buttonSeat = btnPlayer?.seat ?? 0;
+
+  // Convert streets object to flat actions array
+  const streetOrder = ['preflop', 'flop', 'turn', 'river'] as const;
+  const actions: WebReplayData['actions'] = [];
+
+  for (const street of streetOrder) {
+    const streetActions = hand.streets[street];
+    if (streetActions) {
+      for (const a of streetActions) {
+        actions.push({
+          seat: a.seat,
+          action: a.action,
+          amount: a.size ?? 0,
+          street,
+          isAllIn: false, // poker_hands doesn't track all-in explicitly
+        });
+      }
+    }
+  }
+
+  // Build seats array
+  const seats = hand.players.map(p => ({
+    seatIndex: p.seat,
+    displayName: p.displayName,
+    isHero: p.hero,
+    startingStack: p.startStack,
+    holeCards: p.holeCards ?? null,
+  }));
+
+  // Get board and winners from showdown
+  const board = hand.streets.showdown?.board ?? [];
+  const winners = (hand.streets.showdown?.winners ?? []).map(w => ({
+    seat: w.seat,
+    amountWon: w.amount,
+    handDescription: null,
+    shownCards: hand.players.find(p => p.seat === w.seat)?.holeCards ?? null,
+  }));
+
+  return {
+    handId,
+    seats,
+    buttonSeat,
+    smallBlind: hand.meta.smallBlind,
+    bigBlind: hand.meta.bigBlind,
+    actions,
+    board,
+    winners,
+    heroSeat,
+    heroDelta: hand.heroPnL,
+    potSize: hand.potSize,
+    sharerName: shared.sharer_name,
+    isDollars: true,
+  };
+};
+
+const formatMoney = (amount: number, isDollars?: boolean): string => {
+  const sign = amount >= 0 ? '+' : '-';
+  if (isDollars) {
+    return `${sign}$${Math.abs(amount).toFixed(2)}`;
+  }
+  // Cents format
+  const dollars = Math.abs(amount) / 100;
   return `${sign}$${dollars.toFixed(2)}`;
 };
 
 const getHandDescription = (data: WebReplayData): string => {
   const winner = data.winners.find(w => w.seat === data.heroSeat);
-  
+
   if (winner && data.heroDelta > 0) {
     const handDesc = winner.handDescription ? ` with ${winner.handDescription}` : '';
-    return `Won ${formatCents(data.heroDelta)}${handDesc}`;
+    return `Won ${formatMoney(data.heroDelta, data.isDollars)}${handDesc}`;
   }
-  
+
   if (data.heroDelta > 0) {
-    return `Won ${formatCents(data.heroDelta)}`;
+    return `Won ${formatMoney(data.heroDelta, data.isDollars)}`;
   }
-  
+
   if (data.heroDelta < 0) {
-    return `Lost ${formatCents(data.heroDelta)}`;
+    return `Lost ${formatMoney(data.heroDelta, data.isDollars)}`;
   }
-  
+
   return 'Watch the hand replay';
 };
 
@@ -124,18 +190,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const shared = sharedDoc.data() as SharedHand;
 
-    const handDoc = await db.collection('hands').doc(shared.hand_id).get();
+    // Support both 'hands' and 'poker_hands' collections (default to 'hands' for backwards compatibility)
+    const handCollection = shared.collection || 'hands';
+    const handDoc = await db.collection(handCollection).doc(shared.hand_id).get();
     if (!handDoc.exists) {
       return res.status(404).send('Hand data not found');
     }
-
-    const hand = handDoc.data() as BotHandLog;
 
     db.collection('shared_hands').doc(id).update({
       view_count: FieldValue.increment(1),
     }).catch(() => {});
 
-    const replayData = transformHandForWeb(hand, shared);
+    let replayData: WebReplayData;
+    if (handCollection === 'poker_hands') {
+      const hand = handDoc.data() as PokerHand;
+      replayData = transformPokerHandForWeb(hand, shared.hand_id, shared);
+    } else {
+      const hand = handDoc.data() as BotHandLog;
+      replayData = transformHandForWeb(hand, shared);
+    }
     const replayJson = JSON.stringify(replayData);
 
     const title = `Hand shared by @${escapeHtml(shared.sharer_name)} on Stack`;
