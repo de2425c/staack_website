@@ -1,5 +1,5 @@
-import { getTableStyles } from './styles-table.js';
-import { getOverlayStyles } from './styles-overlay.js';
+import { getTableStyles } from "./styles-table.js";
+import { getOverlayStyles } from "./styles-overlay.js";
 
 const getBaseStyles = (): string => `
 :root {
@@ -47,14 +47,17 @@ body {
   padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 16px 0 20px;
+  gap: 6px;
+  padding: 8px 0 12px;
+  flex-shrink: 0;
 }
 
 .header img {
@@ -75,14 +78,15 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.7);
-  margin: 0 auto 16px;
-  padding: 6px 14px;
+  margin: 0 auto 8px;
+  padding: 4px 12px;
   background: rgba(255, 255, 255, 0.06);
   border-radius: 20px;
   font-weight: 500;
   width: fit-content;
+  flex-shrink: 0;
 }
 
 .sharer-info::before {

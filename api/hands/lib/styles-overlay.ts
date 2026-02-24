@@ -1,45 +1,62 @@
 export const getOverlayStyles = (): string => `
-.controls {
+.replay-overlay {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(to top, var(--background) 0%, var(--background) 80%, transparent 100%);
-  padding: 16px 16px max(24px, env(safe-area-inset-bottom));
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
   z-index: 100;
 }
 
-.control-btn {
+.replay-overlay.visible {
+  display: flex;
+}
+
+.replay-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.replay-btn {
+  position: relative;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  width: 100%;
-  max-width: 280px;
-  margin: 0 auto;
-  padding: 12px 24px;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 12px;
+  padding: 14px 28px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
   color: #fff;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.control-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+.replay-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.02);
 }
 
-.control-btn:active:not(:disabled) {
-  background: rgba(255, 255, 255, 0.15);
+.replay-btn:active {
+  transform: scale(0.98);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.replay-btn svg {
+  width: 20px;
+  height: 20px;
 }
 
 .win-overlay {
   position: fixed;
-  top: 40%;
+  top: 35%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0.9);
   background: var(--surface);
@@ -56,6 +73,7 @@ export const getOverlayStyles = (): string => `
 .win-overlay.visible {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
+  pointer-events: none;
 }
 
 .win-title {
@@ -105,10 +123,10 @@ export const getOverlayStyles = (): string => `
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.7);
-  pointer-events: auto;
 }
 
 .cta-card {
+  position: relative;
   background: var(--surface);
   border-radius: 24px 24px 0 0;
   padding: 28px 24px max(40px, env(safe-area-inset-bottom));
@@ -121,6 +139,32 @@ export const getOverlayStyles = (): string => `
 
 .cta-overlay.visible .cta-card {
   transform: translateY(0);
+}
+
+.cta-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.cta-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+}
+
+.cta-close:active {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .cta-handle {

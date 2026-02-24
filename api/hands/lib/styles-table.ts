@@ -2,16 +2,11 @@ export const getTableStyles = (): string => `
 .table-container {
   position: relative;
   width: 100%;
-  height: 70vh;
-  margin: 0 0 16px;
+  flex: 1;
+  min-height: 0;
+  margin: 0;
   perspective: 1000px;
   perspective-origin: center 40%;
-}
-
-@media (max-width: 480px) {
-  .table-container {
-    height: 75vh;
-  }
 }
 
 .felt {
@@ -118,6 +113,12 @@ export const getTableStyles = (): string => `
   padding: 3px 6px;
   background: rgb(38, 38, 38);
   border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.seat-stack.stack-updated {
+  color: #4ADE80;
+  background: rgba(74, 222, 128, 0.15);
 }
 
 .seat-dealer {
@@ -168,10 +169,48 @@ export const getTableStyles = (): string => `
   margin-left: 4px;
 }
 
+.action-indicator {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  background: rgb(38, 38, 38);
+  color: rgba(255, 255, 255, 0.92);
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.2s, transform 0.2s;
+  white-space: nowrap;
+  margin-bottom: 4px;
+}
+
+.action-indicator.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .seat-cards {
   display: flex;
-  gap: 3px;
   margin-bottom: 3px;
+  position: relative;
+}
+
+.card-wrapper {
+  position: relative;
+}
+
+.card-wrapper.first {
+  transform: rotate(-8deg);
+  z-index: 0;
+}
+
+.card-wrapper.second {
+  transform: rotate(8deg);
+  margin-left: -12px;
+  z-index: 1;
+}
+
+.hero-cards .card-wrapper.second {
+  margin-left: -16px;
 }
 
 .card {
@@ -206,9 +245,9 @@ export const getTableStyles = (): string => `
 .card.clubs .suit { color: #4CD964; }
 
 .card-back {
-  width: 28px;
-  height: 40px;
-  border-radius: 4px;
+  width: 32px;
+  height: 45px;
+  border-radius: 5px;
   background: rgb(38, 38, 38);
   border: 0.5px solid rgba(255,255,255,0.1);
   display: flex;
@@ -218,9 +257,10 @@ export const getTableStyles = (): string => `
 }
 
 .card-back img {
-  width: 16px;
-  height: 16px;
+  width: 26px;
+  height: 26px;
   opacity: 0.6;
+  object-fit: contain;
 }
 
 .hero-cards .card {
@@ -409,7 +449,8 @@ export const getTableStyles = (): string => `
   .card { width: 26px; height: 36px; }
   .card .rank { font-size: 13px; }
   .card .suit { font-size: 10px; }
-  .card-back { width: 24px; height: 34px; }
+  .card-back { width: 26px; height: 36px; }
+  .card-back img { width: 20px; height: 20px; }
   .board-card { width: 38px; height: 53px; }
   .board-card .rank { font-size: 19px; }
   .board-card .suit { font-size: 15px; }
