@@ -26,7 +26,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { hand_id, user_id, display_name } = req.body;
+    const { hand_id, user_id, display_name, collection } = req.body;
 
     if (!hand_id || typeof hand_id !== 'string') {
       return res.status(400).json({ error: 'Missing hand_id' });
@@ -36,10 +36,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Missing user_id' });
     }
 
+    // Validate collection parameter - default to 'hands'
+    const validCollections = ['hands', 'poker_hands'];
+    const handCollection = collection && validCollections.includes(collection) ? collection : 'hands';
+
     const db = getDb();
 
     // Verify hand exists
-    const handDoc = await db.collection('hands').doc(hand_id).get();
+    const handDoc = await db.collection(handCollection).doc(hand_id).get();
     if (!handDoc.exists) {
       return res.status(404).json({ error: 'Hand not found' });
     }
@@ -73,6 +77,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       sharer_name: display_name || 'Someone',
       created_at: FieldValue.serverTimestamp(),
       view_count: 0,
+      collection: handCollection,
     });
 
     return res.status(200).json({

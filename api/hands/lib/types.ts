@@ -39,6 +39,59 @@ export interface SharedHand {
   user_id: string;
   sharer_name: string;
   view_count: number;
+  collection?: 'hands' | 'poker_hands';
+}
+
+// poker_hands collection format (live/manual hand tracking)
+export interface PokerHand {
+  heroSeat: number;
+  heroContributions: number;
+  heroFolded: boolean;
+  heroPnL: number;
+  meta: {
+    bigBlind: number;
+    smallBlind: number;
+    effectiveStack: number;
+    liveSessionId?: string;
+    potSize: number;
+    sessionDate?: { _seconds: number; _nanoseconds: number };
+    sessionGameName?: string;
+    sessionStakes?: string;
+    sessionType?: string;
+    tableSize: number;
+    variant?: string;
+  };
+  players: {
+    displayName: string;
+    hero: boolean;
+    holeCards?: string[];
+    isActive: boolean;
+    seat: number;
+    startStack: number;
+  }[];
+  potSize: number;
+  stakes?: string;
+  tableSize: number;
+  streets: {
+    preflop?: PokerHandAction[];
+    flop?: PokerHandAction[];
+    turn?: PokerHandAction[];
+    river?: PokerHandAction[];
+    showdown?: {
+      board: string[];
+      winners: { seat: number; amount: number }[];
+    };
+  };
+  userId: string;
+  wentToShowdown?: boolean;
+  createdAt?: { _seconds: number; _nanoseconds: number };
+  updatedAt?: { _seconds: number; _nanoseconds: number };
+}
+
+export interface PokerHandAction {
+  action: string;
+  seat: number;
+  size?: number;
 }
 
 export interface WebReplayData {
@@ -71,4 +124,5 @@ export interface WebReplayData {
   heroDelta: number;
   potSize: number;
   sharerName: string;
+  isDollars?: boolean; // true for poker_hands (dollars), false/undefined for hands (cents)
 }
