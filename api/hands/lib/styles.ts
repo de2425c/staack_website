@@ -1,5 +1,5 @@
-import { getTableStyles } from './styles-table';
-import { getOverlayStyles } from './styles-overlay';
+import { getTableStyles } from "./styles-table.js";
+import { getOverlayStyles } from "./styles-overlay.js";
 
 const getBaseStyles = (): string => `
 :root {
@@ -28,30 +28,36 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   background: var(--background);
   color: var(--text-primary);
   font-family: -apple-system, 'SF Pro Display', 'SF Pro Text', BlinkMacSystemFont, system-ui, sans-serif;
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
 #app {
   max-width: 100%;
+  height: 100%;
   margin: 0 auto;
-  padding: max(16px, env(safe-area-inset-top)) 16px 140px;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
   position: relative;
-  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 16px 0 20px;
+  gap: 6px;
+  padding: 8px 0 12px;
+  flex-shrink: 0;
 }
 
 .header img {
@@ -72,14 +78,15 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.7);
-  margin: 0 auto 16px;
-  padding: 6px 14px;
+  margin: 0 auto 8px;
+  padding: 4px 12px;
   background: rgba(255, 255, 255, 0.06);
   border-radius: 20px;
   font-weight: 500;
   width: fit-content;
+  flex-shrink: 0;
 }
 
 .sharer-info::before {

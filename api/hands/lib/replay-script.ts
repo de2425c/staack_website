@@ -1,20 +1,22 @@
 export const getReplayScript = (): string => `
+const HAND = JSON.parse(document.getElementById('replayData').textContent);
+
 const SEAT_POSITIONS = [
-  { top: 90, left: 50 },
-  { top: 70, left: 10 },
-  { top: 25, left: 12 },
-  { top: 10, left: 50 },
-  { top: 25, left: 88 },
-  { top: 70, left: 90 },
+  { top: 88, left: 50 },
+  { top: 72, left: 12 },
+  { top: 28, left: 14 },
+  { top: 12, left: 50 },
+  { top: 28, left: 86 },
+  { top: 72, left: 88 },
 ];
 
 const BET_POSITIONS = [
-  { top: 75, left: 50 },
-  { top: 62, left: 25 },
-  { top: 38, left: 25 },
+  { top: 73, left: 50 },
+  { top: 62, left: 24 },
+  { top: 38, left: 24 },
   { top: 25, left: 50 },
-  { top: 38, left: 75 },
-  { top: 62, left: 75 },
+  { top: 38, left: 76 },
+  { top: 62, left: 76 },
 ];
 
 
@@ -82,12 +84,17 @@ function init() {
     seatEl.style.left = SEAT_POSITIONS[i].left + '%';
 
     let cardsHtml = '';
-    if (seat.holeCards && seat.holeCards.length === 2) {
+    if (isHero && seat.holeCards && seat.holeCards.length === 2) {
       const cards = seat.holeCards.map(parseCard).filter(c => c);
-      const cardClass = isHero ? 'hero-cards' : '';
-      cardsHtml = '<div class="seat-cards ' + cardClass + '">' + cards.map(c => makeCardEl(c.rank, c.suit)).join('') + '</div>';
+      cardsHtml = '<div class="seat-cards hero-cards">' + 
+        '<div class="card-wrapper first">' + makeCardEl(cards[0].rank, cards[0].suit) + '</div>' +
+        '<div class="card-wrapper second">' + makeCardEl(cards[1].rank, cards[1].suit) + '</div>' +
+      '</div>';
     } else {
-      cardsHtml = '<div class="seat-cards"><div class="card-back"><img src="https://stackpoker.gg/images/logo.png" alt=""/></div><div class="card-back"><img src="https://stackpoker.gg/images/logo.png" alt=""/></div></div>';
+      cardsHtml = '<div class="seat-cards">' +
+        '<div class="card-wrapper first"><div class="card-back"><img src="https://stackpoker.gg/images/logo.png" alt=""/></div></div>' +
+        '<div class="card-wrapper second"><div class="card-back"><img src="https://stackpoker.gg/images/logo.png" alt=""/></div></div>' +
+      '</div>';
     }
 
     const emoji = isHero ? '😎' : BOT_EMOJIS[seat.seatIndex % BOT_EMOJIS.length];
@@ -126,7 +133,19 @@ function init() {
     boardCardEls.push(el);
   }
 
-  document.getElementById('replayBtn').onclick = startReplay;
+  const replayBtn = document.getElementById('replayBtn');
+  console.log('[DEBUG] replayBtn element:', replayBtn);
+  
+  function handleReplayClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('[DEBUG] Replay button clicked via', e.type);
+    startReplay();
+  }
+  
+  replayBtn.addEventListener('click', handleReplayClick);
+  replayBtn.addEventListener('touchend', handleReplayClick);
+  
   setTimeout(startReplay, 1200);
 }
 
@@ -261,16 +280,25 @@ function resetState() {
     const cardsContainer = el.querySelector('.seat-cards');
     if (cardsContainer) {
       const isHero = seat.seatIndex === HAND.heroSeat;
-      if (seat.holeCards && seat.holeCards.length === 2) {
+      if (isHero && seat.holeCards && seat.holeCards.length === 2) {
         const cards = seat.holeCards.map(parseCard).filter(c => c);
-        const cardClass = isHero ? 'hero-cards' : '';
-        cardsContainer.className = 'seat-cards ' + cardClass;
-        cardsContainer.innerHTML = cards.map(c => makeCardEl(c.rank, c.suit)).join('');
+        cardsContainer.className = 'seat-cards hero-cards';
+        cardsContainer.innerHTML = '<div class="card-wrapper first">' + makeCardEl(cards[0].rank, cards[0].suit) + '</div>' +
+          '<div class="card-wrapper second">' + makeCardEl(cards[1].rank, cards[1].suit) + '</div>';
       } else {
         cardsContainer.className = 'seat-cards';
-        cardsContainer.innerHTML = '<div class="card-back"><img src="https://stackpoker.gg/images/logo.png" alt=""/></div><div class="card-back"><img src="https://stackpoker.gg/images/logo.png" alt=""/></div>';
+        cardsContainer.innerHTML = '<div class="card-wrapper first"><div class="card-back"><img src="https://stackpoker.gg/images/logo.png" alt=""/></div></div>' +
+          '<div class="card-wrapper second"><div class="card-back"><img src="https://stackpoker.gg/images/logo.png" alt=""/></div></div>';
       }
     }
+    const stackEl = el.querySelector('.seat-stack');
+    if (stackEl) {
+      stackEl.textContent = formatCents(seat.startingStack);
+      stackEl.classList.remove('stack-updated', 'stack-loss');
+    }
+    
+    const actionIndicator = el.querySelector('.action-indicator');
+    if (actionIndicator) actionIndicator.classList.remove('visible');
   });
 
   const potEl = document.getElementById('pot');
@@ -279,15 +307,64 @@ function resetState() {
   if (potAmountEl) potAmountEl.textContent = '$0.00';
   document.getElementById('ctaOverlay').classList.remove('visible');
   document.getElementById('winOverlay').classList.remove('visible');
-  document.getElementById('replayBtn').disabled = false;
+  hideReplayOverlay();
 }
 
 function startReplay() {
-  if (isPlaying) return;
+  console.log('[DEBUG] startReplay called, isPlaying:', isPlaying);
+  if (isPlaying) {
+    console.log('[DEBUG] Already playing, returning');
+    return;
+  }
   resetState();
   isPlaying = true;
-  document.getElementById('replayBtn').disabled = true;
+  hideReplayOverlay();
   playNextAction();
+}
+
+function showReplayOverlay() {
+  console.log('[DEBUG] showReplayOverlay called');
+  const overlay = document.getElementById('replayOverlay');
+  console.log('[DEBUG] replayOverlay element:', overlay);
+  overlay.classList.add('visible');
+  console.log('[DEBUG] overlay classList after add:', overlay.classList.toString());
+}
+
+function hideReplayOverlay() {
+  console.log('[DEBUG] hideReplayOverlay called');
+  document.getElementById('replayOverlay').classList.remove('visible');
+}
+
+function showActionIndicator(seatIdx, action, amount) {
+  const visIdx = seatToVisualIndex[seatIdx];
+  if (visIdx === undefined) return;
+  const seatEl = seatEls[visIdx];
+  
+  let indicatorEl = seatEl.querySelector('.action-indicator');
+  if (!indicatorEl) {
+    indicatorEl = document.createElement('div');
+    indicatorEl.className = 'action-indicator';
+    seatEl.insertBefore(indicatorEl, seatEl.firstChild);
+  }
+  
+  let text = action;
+  if (amount > 0 && action !== 'Check' && action !== 'Fold') {
+    text = action + ' ' + formatCents(amount);
+  }
+  
+  indicatorEl.textContent = text;
+  indicatorEl.classList.add('visible');
+  
+  setTimeout(() => {
+    indicatorEl.classList.remove('visible');
+  }, 600);
+}
+
+function clearAllActionIndicators() {
+  seatEls.forEach(el => {
+    const indicator = el.querySelector('.action-indicator');
+    if (indicator) indicator.classList.remove('visible');
+  });
 }
 
 function playNextAction() {
@@ -302,11 +379,14 @@ function playNextAction() {
   if (a.street !== currentStreet && a.street !== 'preflop') {
     revealBoardCards(a.street);
     currentStreet = a.street;
+    clearAllActionIndicators();
     setTimeout(playNextAction, 900);
     return;
   }
 
   const normalizedAction = capitalizeAction(a.action);
+  showActionIndicator(a.seat, normalizedAction, a.amount);
+  
   if (normalizedAction === 'Fold') {
     foldSeat(a.seat);
   } else if (normalizedAction !== 'Check' && a.amount > 0) {
@@ -321,11 +401,15 @@ function finishReplay() {
   isPlaying = false;
   collectPot();
 
+  const playersStillInHand = rotatedSeats.filter(s => !foldedSet.has(s.seatIndex)).length;
+  const isShowdown = playersStillInHand > 1;
+
   HAND.winners.forEach(w => {
     const visIdx = seatToVisualIndex[w.seat];
     if (visIdx !== undefined) {
       seatEls[visIdx].classList.add('winner');
-      if (w.shownCards && w.shownCards.length === 2) {
+      
+      if (isShowdown && w.shownCards && w.shownCards.length === 2) {
         const seatEl = seatEls[visIdx];
         const cardsContainer = seatEl.querySelector('.seat-cards');
         if (cardsContainer) {
@@ -333,15 +417,37 @@ function finishReplay() {
           const isHero = w.seat === HAND.heroSeat;
           const cardClass = isHero ? 'hero-cards' : '';
           cardsContainer.className = 'seat-cards ' + cardClass;
-          cardsContainer.innerHTML = cards.map(c => makeCardEl(c.rank, c.suit)).join('');
+          cardsContainer.innerHTML = '<div class="card-wrapper first">' + makeCardEl(cards[0].rank, cards[0].suit) + '</div>' +
+            '<div class="card-wrapper second">' + makeCardEl(cards[1].rank, cards[1].suit) + '</div>';
         }
       }
     }
   });
 
+  updateBalancesAfterHand();
   showWinResult();
-  document.getElementById('replayBtn').disabled = false;
+  showReplayOverlay();
   setTimeout(showCta, 2500);
+}
+
+function updateBalancesAfterHand() {
+  rotatedSeats.forEach((seat, i) => {
+    const seatEl = seatEls[i];
+    const stackEl = seatEl.querySelector('.seat-stack');
+    if (stackEl) {
+      const delta = HAND.stackDeltas ? HAND.stackDeltas[String(seat.seatIndex)] : 0;
+      if (delta) {
+        const finalStack = seat.startingStack + delta;
+        stackEl.textContent = formatCents(finalStack);
+        
+        if (delta > 0) {
+          stackEl.classList.add('stack-updated');
+        } else if (delta < 0) {
+          stackEl.classList.add('stack-loss');
+        }
+      }
+    }
+  });
 }
 
 function showWinResult() {
@@ -372,6 +478,12 @@ function showWinResult() {
 function showCta() {
   document.getElementById('ctaOverlay').classList.add('visible');
 }
+
+function closeCta() {
+  document.getElementById('ctaOverlay').classList.remove('visible');
+}
+
+window.closeCta = closeCta;
 
 init();
 `;
