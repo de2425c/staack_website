@@ -8,6 +8,10 @@
     {
       "source": "/hands/:id",
       "destination": "/api/hands/:id"
+    },
+    {
+      "source": "/invite/:inviter",
+      "destination": "/api/invite/:inviter"
     }
   ],
   "headers": [

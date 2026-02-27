@@ -1,20 +1,21 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 
 interface ClaimLatestInviteRequest {
-  userId: string;
-  deviceId?: string;
+  token?: string;
 }
 
 interface ClaimLatestInviteResponse {
   success: boolean;
-  inviterId?: string;
+  inviterUsername?: string;
+  inviterUid?: string | null;
   token?: string;
   message?: string;
 }
 
-function getDb(): FirebaseFirestore.Firestore {
+function initFirebase(): void {
   if (getApps().length === 0) {
     initializeApp({
       credential: cert({
@@ -24,6 +25,10 @@ function getDb(): FirebaseFirestore.Firestore {
       }),
     });
   }
+}
+
+function getDb(): FirebaseFirestore.Firestore {
+  initFirebase();
   return getFirestore();
 }
 
@@ -40,43 +45,95 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const body = req.body as ClaimLatestInviteRequest;
-
-  if (!body.userId || typeof body.userId !== 'string') {
-    return res.status(400).json({ error: 'Missing userId' });
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Missing or invalid Authorization header' });
   }
+
+  initFirebase();
+
+  let authenticatedUserId: string;
+  try {
+    const idToken = authHeader.slice(7);
+    const decodedToken = await getAuth().verifyIdToken(idToken);
+    authenticatedUserId = decodedToken.uid;
+  } catch (authError) {
+    console.error('Auth error:', authError);
+    return res.status(401).json({ error: 'Invalid or expired token' });
+  }
+
+  const body = req.body as ClaimLatestInviteRequest;
 
   try {
     const db = getDb();
 
-    const invitesSnapshot = await db
-      .collection('pending_invites')
-      .where('redeemed', '==', false)
-      .where('source', '==', 'web')
-      .orderBy('createdAt', 'desc')
-      .limit(1)
-      .get();
+    let inviteDoc: FirebaseFirestore.QueryDocumentSnapshot | FirebaseFirestore.DocumentSnapshot;
+    let inviteData: FirebaseFirestore.DocumentData;
 
-    if (invitesSnapshot.empty) {
-      const response: ClaimLatestInviteResponse = {
-        success: false,
-        message: 'No pending invite found',
-      };
-      return res.status(404).json(response);
+    if (body.token && typeof body.token === 'string') {
+      const tokenDoc = await db.collection('pending_invites').doc(body.token).get();
+
+      if (!tokenDoc.exists) {
+        return res.status(404).json({
+          success: false,
+          message: 'Invalid invite token',
+        });
+      }
+
+      const tokenData = tokenDoc.data();
+      if (!tokenData || tokenData.redeemed) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invite already redeemed',
+        });
+      }
+
+      inviteDoc = tokenDoc;
+      inviteData = tokenData;
+    } else {
+      const invitesSnapshot = await db
+        .collection('pending_invites')
+        .where('redeemed', '==', false)
+        .where('source', '==', 'web')
+        .orderBy('createdAt', 'desc')
+        .limit(1)
+        .get();
+
+      if (invitesSnapshot.empty) {
+        return res.status(404).json({
+          success: false,
+          message: 'No pending invite found',
+        });
+      }
+
+      inviteDoc = invitesSnapshot.docs[0];
+      inviteData = inviteDoc.data();
     }
 
-    const inviteDoc = invitesSnapshot.docs[0];
-    const inviteData = inviteDoc.data();
+    if (inviteData.expiresAt && inviteData.expiresAt.toDate() < new Date()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invite has expired',
+      });
+    }
+
+    if (inviteData.inviterUid === authenticatedUserId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cannot claim your own invite',
+      });
+    }
 
     await inviteDoc.ref.update({
       redeemed: true,
-      redeemedBy: body.userId,
+      redeemedBy: authenticatedUserId,
       redeemedAt: FieldValue.serverTimestamp(),
     });
 
     const response: ClaimLatestInviteResponse = {
       success: true,
-      inviterId: inviteData.inviterId,
+      inviterUsername: inviteData.inviterUsername || inviteData.inviterId,
+      inviterUid: inviteData.inviterUid || null,
       token: inviteDoc.id,
     };
 

@@ -1,9 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 
 interface RedeemInviteRequest {
-  userId: string;
   inviterId: string;
 }
 
@@ -13,7 +13,7 @@ interface RedeemInviteResponse {
   message?: string;
 }
 
-function getDb(): FirebaseFirestore.Firestore {
+function initFirebase(): void {
   if (getApps().length === 0) {
     initializeApp({
       credential: cert({
@@ -23,6 +23,10 @@ function getDb(): FirebaseFirestore.Firestore {
       }),
     });
   }
+}
+
+function getDb(): FirebaseFirestore.Firestore {
+  initFirebase();
   return getFirestore();
 }
 
@@ -39,11 +43,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const body = req.body as RedeemInviteRequest;
-
-  if (!body.userId || typeof body.userId !== 'string') {
-    return res.status(400).json({ error: 'Missing userId' });
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Missing or invalid Authorization header' });
   }
+
+  initFirebase();
+
+  let authenticatedUserId: string;
+  try {
+    const idToken = authHeader.slice(7);
+    const decodedToken = await getAuth().verifyIdToken(idToken);
+    authenticatedUserId = decodedToken.uid;
+  } catch (authError) {
+    console.error('Auth error:', authError);
+    return res.status(401).json({ error: 'Invalid or expired token' });
+  }
+
+  const body = req.body as RedeemInviteRequest;
 
   if (!body.inviterId || typeof body.inviterId !== 'string') {
     return res.status(400).json({ error: 'Missing inviterId' });
@@ -54,7 +71,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
 
     const existingRedemption = await db
       .collection('redeemed_invites')
-      .where('userId', '==', body.userId)
+      .where('userId', '==', authenticatedUserId)
       .limit(1)
       .get();
 
@@ -66,7 +83,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       return res.status(400).json(response);
     }
 
-    if (body.userId === body.inviterId) {
+    if (authenticatedUserId === body.inviterId) {
       const response: RedeemInviteResponse = {
         success: false,
         message: 'Cannot redeem your own invite',
@@ -75,7 +92,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     }
 
     await db.collection('redeemed_invites').add({
-      userId: body.userId,
+      userId: authenticatedUserId,
       inviterId: body.inviterId,
       redeemedAt: FieldValue.serverTimestamp(),
       source: 'universal_link',

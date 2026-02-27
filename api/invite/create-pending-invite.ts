@@ -1,23 +1,22 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { getAuth } from 'firebase-admin/auth';
+import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { randomUUID } from 'crypto';
-
-interface CreatePendingInviteRequest {
-  inviterId: string;
-}
 
 interface PendingInvite {
   token: string;
-  inviterId: string;
+  inviterUid: string;
+  inviterUsername: string | null;
   createdAt: FirebaseFirestore.FieldValue;
+  expiresAt: FirebaseFirestore.Timestamp;
   redeemed: boolean;
   redeemedBy: string | null;
   redeemedAt: FirebaseFirestore.FieldValue | null;
   source: 'app' | 'web';
 }
 
-function getDb(): FirebaseFirestore.Firestore {
+function initFirebase(): void {
   if (getApps().length === 0) {
     initializeApp({
       credential: cert({
@@ -27,6 +26,10 @@ function getDb(): FirebaseFirestore.Firestore {
       }),
     });
   }
+}
+
+function getDb(): FirebaseFirestore.Firestore {
+  initFirebase();
   return getFirestore();
 }
 
@@ -43,20 +46,42 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const body = req.body as CreatePendingInviteRequest;
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Missing or invalid Authorization header' });
+  }
 
-  if (!body.inviterId || typeof body.inviterId !== 'string') {
-    return res.status(400).json({ error: 'Missing inviterId' });
+  initFirebase();
+
+  let inviterUid: string;
+  try {
+    const idToken = authHeader.slice(7);
+    const decodedToken = await getAuth().verifyIdToken(idToken);
+    inviterUid = decodedToken.uid;
+  } catch (authError) {
+    console.error('Auth error:', authError);
+    return res.status(401).json({ error: 'Invalid or expired token' });
   }
 
   try {
     const db = getDb();
     const token = randomUUID();
 
+    let inviterUsername: string | null = null;
+    const userDoc = await db.collection('users').doc(inviterUid).get();
+    if (userDoc.exists) {
+      inviterUsername = userDoc.data()?.username || null;
+    }
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 30);
+
     const pendingInvite: PendingInvite = {
       token,
-      inviterId: body.inviterId,
+      inviterUid,
+      inviterUsername,
       createdAt: FieldValue.serverTimestamp(),
+      expiresAt: Timestamp.fromDate(expiresAt),
       redeemed: false,
       redeemedBy: null,
       redeemedAt: null,
@@ -68,7 +93,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     return res.status(200).json({
       success: true,
       token,
-      inviterId: body.inviterId,
+      inviterUid,
+      inviterUsername,
     });
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'unknown';

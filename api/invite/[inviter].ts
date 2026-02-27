@@ -1,12 +1,15 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { initializeApp, getApps, cert } from 'firebase-admin/app';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import { randomUUID } from 'crypto';
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { initializeApp, getApps, cert } from "firebase-admin/app";
+import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
+import { randomUUID } from "crypto";
 
 interface PendingInvite {
   token: string;
-  inviterId: string;
+  inviterUsername: string;
+  inviterUid: string;
+  source: "web" | "app";
   createdAt: FirebaseFirestore.FieldValue;
+  expiresAt: FirebaseFirestore.Timestamp;
   redeemed: boolean;
   redeemedBy: string | null;
   redeemedAt: FirebaseFirestore.FieldValue | null;
@@ -18,7 +21,7 @@ function getDb(): FirebaseFirestore.Firestore {
       credential: cert({
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
       }),
     });
   }
@@ -26,66 +29,74 @@ function getDb(): FirebaseFirestore.Firestore {
 }
 
 function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<VercelResponse> {
   const { inviter } = req.query;
 
-  if (!inviter || typeof inviter !== 'string') {
-    return res.status(400).send('Missing inviter ID');
+  if (!inviter || typeof inviter !== "string") {
+    return res.status(400).send("Missing inviter ID");
   }
 
-  const inviterId = inviter;
+  const inviterUsername = inviter;
 
   try {
     const db = getDb();
     const token = randomUUID();
 
+    const usersSnapshot = await db
+      .collection("users")
+      .where("username", "==", inviterUsername)
+      .limit(1)
+      .get();
+
+    if (usersSnapshot.empty) {
+      return res.status(404).send("User not found");
+    }
+
+    const inviterUid = usersSnapshot.docs[0].id;
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 30);
+
     const pendingInvite: PendingInvite = {
       token,
-      inviterId,
+      inviterUsername,
+      inviterUid,
+      source: "web",
       createdAt: FieldValue.serverTimestamp(),
+      expiresAt: Timestamp.fromDate(expiresAt),
       redeemed: false,
       redeemedBy: null,
       redeemedAt: null,
     };
 
-    await db.collection('pending_invites').doc(token).set(pendingInvite);
+    await db.collection("pending_invites").doc(token).set(pendingInvite);
+    console.log(`[INVITE] Created pending invite - Token: ${token}, Username: ${inviterUsername}, UID: ${inviterUid}`);
 
-    const title = 'Join me on Stack Poker!';
-    const description = 'Your friend invited you to Stack Poker - the poker training app.';
-    const ogImageUrl = 'https://stackpoker.gg/images/og-invite.png';
+    const title = "Join me on Stack Poker!";
+    const description = "Your friend invited you to Stack Poker - the poker training app.";
+    const ogImageUrl = "https://stackpoker.gg/images/og-invite.png";
 
-    const html = buildInvitePage(inviterId, token, title, description, ogImageUrl);
+    const html = buildInvitePage(inviterUsername, token, title, description, ogImageUrl);
 
-    res.setHeader('Content-Type', 'text/html');
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader("Content-Type", "text/html");
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     return res.status(200).send(html);
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'unknown';
-    console.error('Error creating pending invite:', errorMessage);
+    const errorMessage = error instanceof Error ? error.message : "unknown";
+    console.error("Error creating pending invite:", errorMessage);
     return res.status(500).send(`Internal server error: ${errorMessage}`);
   }
 }
 
-function buildInvitePage(
-  inviterId: string,
-  token: string,
-  title: string,
-  description: string,
-  ogImageUrl: string
-): string {
+function buildInvitePage(inviterUsername: string, token: string, title: string, description: string, ogImageUrl: string): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>${escapeHtml(title)}</title>
   <meta property="og:title" content="${escapeHtml(title)}">
   <meta property="og:description" content="${escapeHtml(description)}">
@@ -93,7 +104,7 @@ function buildInvitePage(
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://stackpoker.gg/invite/${escapeHtml(inviterId)}">
+  <meta property="og:url" content="https://stackpoker.gg/invite/${escapeHtml(inviterUsername)}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${escapeHtml(title)}">
   <meta name="twitter:description" content="${escapeHtml(description)}">
@@ -106,18 +117,27 @@ function buildInvitePage(
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; }
+    html, body { 
+      height: 100%;
+    }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
       background: linear-gradient(180deg, #0d5c3d 0%, #094d33 50%, #062d1f 100%);
+      background-attachment: fixed;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 24px;
+      padding-top: max(24px, env(safe-area-inset-top));
+      padding-bottom: max(24px, env(safe-area-inset-bottom));
+      padding-left: max(24px, env(safe-area-inset-left));
+      padding-right: max(24px, env(safe-area-inset-right));
       color: #fff;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     .container {
@@ -264,7 +284,7 @@ function buildInvitePage(
 <body>
   <div class="container">
     <div class="logo">
-      <img src="https://stackpoker.gg/images/logo-icon.png" alt="Stack Poker">
+      <img src="/images/stack-logo-small.png" alt="Stack Poker" style="filter: brightness(0);">
     </div>
 
     <h1>You're Invited to Stack Poker</h1>
@@ -272,7 +292,7 @@ function buildInvitePage(
 
     <div class="invite-card">
       <div class="invite-label">Invited by</div>
-      <div class="inviter-name">${escapeHtml(inviterId)}</div>
+      <div class="inviter-name">${escapeHtml(inviterUsername)}</div>
     </div>
 
     <div class="features">
@@ -314,7 +334,7 @@ function buildInvitePage(
     </div>
   </div>
 
-  <div class="hidden-token" data-token="${token}" data-inviter="${escapeHtml(inviterId)}"></div>
+  <div class="hidden-token" data-token="${token}" data-inviter="${escapeHtml(inviterUsername)}"></div>
 </body>
 </html>`;
 }
