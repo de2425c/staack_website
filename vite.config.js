@@ -14,7 +14,12 @@ export default defineConfig({
         "range-training": resolve(__dirname, "range-training.html"),
         "session-tracking": resolve(__dirname, "session-tracking.html"),
         404: resolve(__dirname, "404.html"),
+        invite: resolve(__dirname, "invite.html"),
       },
     },
+  },
+  server: {
+    host: true, // exposes to network (0.0.0.0)
+    port: 3000,
   },
 });
