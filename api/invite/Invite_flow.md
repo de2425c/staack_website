@@ -46,7 +46,8 @@ The invite system allows users to share invite links. When a new user signs up t
    │ status: "pending"                  │
    │ createdAt: <timestamp>             │
    │ expiresAt: <1 hour from now>       │
-   │ redeemerIPAddress: "192.168.1.1"   │
+   │ redeemerIPv4: "192.168.1.1"        │
+   │ redeemerIPv6: null                 │
    │ redeemerUserAgent: "Mozilla/..."   │
    │ redeemerIOSMajorVersion: "17"      │
    │ redeemerDeviceType: "iPhone"       │
@@ -75,7 +76,7 @@ The invite system allows users to share invite links. When a new user signs up t
                               │
                               ▼
 9. Server matches by:
-   - IP address (same WiFi network)
+   - IPv4 or IPv6 address (same WiFi network)
    - Device type (iPhone/iPad)
    - iOS version
    - Not expired (within 1 hour)
@@ -158,7 +159,8 @@ interface InviteClaim {
   expiresAt: Timestamp;             // 1 hour TTL
   redeemedByUserId: string | null;
   redeemedAt: Timestamp | null;
-  redeemerIPAddress: string | null;
+  redeemerIPv4: string | null;
+  redeemerIPv6: string | null;
   redeemerUserAgent: string | null;
   redeemerIOSMajorVersion: string | null;
   redeemerDeviceType: string | null;
@@ -231,7 +233,8 @@ func claimInviteIfAvailable() async throws -> InviteInfo? {
 If you see `FAILED_PRECONDITION` errors, create composite indexes:
 
 1. `invite_claims`:
-   - `status` ASC, `expiresAt` ASC, `redeemerIPAddress` ASC
+   - `status` ASC, `expiresAt` ASC, `redeemerIPv4` ASC
+   - `status` ASC, `expiresAt` ASC, `redeemerIPv6` ASC
 
 2. `pending_invites` (legacy):
    - `redeemed` ASC, `source` ASC, `createdAt` DESC

@@ -33,6 +33,11 @@ function getDb(): FirebaseFirestore.Firestore {
   return getFirestore();
 }
 
+interface ParsedIP {
+  ipv4: string | null;
+  ipv6: string | null;
+}
+
 function getClientIP(req: VercelRequest): string | null {
   const xForwardedFor = req.headers['x-forwarded-for'];
   if (typeof xForwardedFor === 'string') {
@@ -43,6 +48,20 @@ function getClientIP(req: VercelRequest): string | null {
     return xRealIP;
   }
   return null;
+}
+
+function parseClientIP(rawIP: string | null): ParsedIP {
+  if (!rawIP) {
+    return { ipv4: null, ipv6: null };
+  }
+  const ipv4MappedPrefix = '::ffff:';
+  if (rawIP.startsWith(ipv4MappedPrefix)) {
+    return { ipv4: rawIP.slice(ipv4MappedPrefix.length), ipv6: null };
+  }
+  if (rawIP.includes(':')) {
+    return { ipv4: null, ipv6: rawIP };
+  }
+  return { ipv4: rawIP, ipv6: null };
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<VercelResponse> {
@@ -76,7 +95,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   }
 
   const body = req.body as ClaimByFingerprintRequest;
-  const clientIP = getClientIP(req);
+  const rawIP = getClientIP(req);
+  const { ipv4, ipv6 } = parseClientIP(rawIP);
   const userAgent = (req.headers['user-agent'] as string) || '';
 
   try {
@@ -88,8 +108,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       .where('status', '==', 'pending')
       .where('expiresAt', '>', now);
 
-    if (clientIP) {
-      query = query.where('redeemerIPAddress', '==', clientIP);
+    if (ipv4) {
+      query = query.where('redeemerIPv4', '==', ipv4);
+    } else if (ipv6) {
+      query = query.where('redeemerIPv6', '==', ipv6);
     }
 
     if (body.deviceType) {
@@ -141,7 +163,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       redeemedAt: FieldValue.serverTimestamp(),
     });
 
-    console.log(`[INVITE] Claimed by fingerprint - Token: ${matchedClaim.id}, Redeemer: ${authenticatedUserId}, IP: ${clientIP}`);
+    console.log(`[INVITE] Claimed by fingerprint - Token: ${matchedClaim.id}, Redeemer: ${authenticatedUserId}, IPv4: ${ipv4}, IPv6: ${ipv6}`);
 
     const response: ClaimByFingerprintResponse = {
       success: true,
