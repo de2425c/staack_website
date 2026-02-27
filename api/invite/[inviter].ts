@@ -3,16 +3,58 @@ import { initializeApp, getApps, cert } from "firebase-admin/app";
 import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
 import { randomUUID } from "crypto";
 
-interface PendingInvite {
+interface InviteClaim {
   token: string;
   inviterUsername: string;
-  inviterUid: string;
+  inviterUserId: string;
   source: "web" | "app";
   createdAt: FirebaseFirestore.FieldValue;
   expiresAt: FirebaseFirestore.Timestamp;
-  redeemed: boolean;
-  redeemedBy: string | null;
+  status: "pending" | "redeemed" | "expired";
+  redeemedByUserId: string | null;
   redeemedAt: FirebaseFirestore.FieldValue | null;
+  redeemerIPAddress: string | null;
+  redeemerUserAgent: string | null;
+  redeemerIOSMajorVersion: string | null;
+  redeemerDeviceType: string | null;
+}
+
+function parseUserAgent(userAgent: string): { iosMajorVersion: string | null; deviceType: string | null } {
+  let iosMajorVersion: string | null = null;
+  let deviceType: string | null = null;
+
+  const iosMatch = userAgent.match(/(?:iPhone|iPad|iPod).*?OS (\d+)/i);
+  if (iosMatch) {
+    iosMajorVersion = iosMatch[1];
+  }
+
+  if (/iPhone/i.test(userAgent)) {
+    deviceType = "iPhone";
+  } else if (/iPad/i.test(userAgent)) {
+    deviceType = "iPad";
+  } else if (/iPod/i.test(userAgent)) {
+    deviceType = "iPod";
+  } else if (/Android/i.test(userAgent)) {
+    deviceType = "Android";
+  } else if (/Mac/i.test(userAgent)) {
+    deviceType = "Mac";
+  } else if (/Windows/i.test(userAgent)) {
+    deviceType = "Windows";
+  }
+
+  return { iosMajorVersion, deviceType };
+}
+
+function getClientIP(req: VercelRequest): string | null {
+  const xForwardedFor = req.headers["x-forwarded-for"];
+  if (typeof xForwardedFor === "string") {
+    return xForwardedFor.split(",")[0].trim();
+  }
+  const xRealIP = req.headers["x-real-ip"];
+  if (typeof xRealIP === "string") {
+    return xRealIP;
+  }
+  return null;
 }
 
 function getDb(): FirebaseFirestore.Firestore {
@@ -55,25 +97,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       return res.status(404).send("User not found");
     }
 
-    const inviterUid = usersSnapshot.docs[0].id;
+    const inviterUserId = usersSnapshot.docs[0].id;
 
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 30);
+    expiresAt.setHours(expiresAt.getHours() + 1);
 
-    const pendingInvite: PendingInvite = {
+    const userAgent = (req.headers["user-agent"] as string) || "";
+    const { iosMajorVersion, deviceType } = parseUserAgent(userAgent);
+    const clientIP = getClientIP(req);
+
+    const inviteClaim: InviteClaim = {
       token,
       inviterUsername,
-      inviterUid,
+      inviterUserId,
       source: "web",
       createdAt: FieldValue.serverTimestamp(),
       expiresAt: Timestamp.fromDate(expiresAt),
-      redeemed: false,
-      redeemedBy: null,
+      status: "pending",
+      redeemedByUserId: null,
       redeemedAt: null,
+      redeemerIPAddress: clientIP,
+      redeemerUserAgent: userAgent || null,
+      redeemerIOSMajorVersion: iosMajorVersion,
+      redeemerDeviceType: deviceType,
     };
 
-    await db.collection("pending_invites").doc(token).set(pendingInvite);
-    console.log(`[INVITE] Created pending invite - Token: ${token}, Username: ${inviterUsername}, UID: ${inviterUid}`);
+    await db.collection("invite_claims").doc(token).set(inviteClaim);
+    console.log(`[INVITE] Created invite claim - Token: ${token}, Inviter: ${inviterUsername}, IP: ${clientIP}, Device: ${deviceType}`);
 
     const title = "Join me on Stack Poker!";
     const description = "Your friend invited you to Stack Poker - the poker training app.";
