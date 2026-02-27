@@ -13,10 +13,30 @@ interface InviteClaim {
   status: "pending" | "redeemed" | "expired";
   redeemedByUserId: string | null;
   redeemedAt: FirebaseFirestore.FieldValue | null;
-  redeemerIPAddress: string | null;
+  redeemerIPv4: string | null;
+  redeemerIPv6: string | null;
   redeemerUserAgent: string | null;
   redeemerIOSMajorVersion: string | null;
   redeemerDeviceType: string | null;
+}
+
+interface ParsedIP {
+  ipv4: string | null;
+  ipv6: string | null;
+}
+
+function parseClientIP(rawIP: string | null): ParsedIP {
+  if (!rawIP) {
+    return { ipv4: null, ipv6: null };
+  }
+  const ipv4MappedPrefix = "::ffff:";
+  if (rawIP.startsWith(ipv4MappedPrefix)) {
+    return { ipv4: rawIP.slice(ipv4MappedPrefix.length), ipv6: null };
+  }
+  if (rawIP.includes(":")) {
+    return { ipv4: null, ipv6: rawIP };
+  }
+  return { ipv4: rawIP, ipv6: null };
 }
 
 function parseUserAgent(userAgent: string): { iosMajorVersion: string | null; deviceType: string | null } {
@@ -97,14 +117,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     const db = getDb();
     const token = randomUUID();
 
-    const usersSnapshot = await db
-      .collection("users")
-      .where("username", "==", inviterUsername)
-      .limit(1)
-      .get();
+    const usersSnapshot = await db.collection("users").where("username", "==", inviterUsername).limit(1).get();
 
     if (usersSnapshot.empty) {
-      return res.status(404).send("User not found");
+      res.setHeader("Content-Type", "text/html");
+      return res.status(404).send(buildNotFoundPage());
     }
 
     const inviterUserId = usersSnapshot.docs[0].id;
@@ -114,7 +131,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
 
     const userAgent = (req.headers["user-agent"] as string) || "";
     const { iosMajorVersion, deviceType } = parseUserAgent(userAgent);
-    const clientIP = getClientIP(req);
+    const rawIP = getClientIP(req);
+    const { ipv4, ipv6 } = parseClientIP(rawIP);
 
     const inviteClaim: InviteClaim = {
       token,
@@ -126,14 +144,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       status: "pending",
       redeemedByUserId: null,
       redeemedAt: null,
-      redeemerIPAddress: clientIP,
+      redeemerIPv4: ipv4,
+      redeemerIPv6: ipv6,
       redeemerUserAgent: userAgent || null,
       redeemerIOSMajorVersion: iosMajorVersion,
       redeemerDeviceType: deviceType,
     };
 
     await db.collection("invite_claims").doc(token).set(inviteClaim);
-    console.log(`[INVITE] Created invite claim - Token: ${token}, Inviter: ${inviterUsername}, IP: ${clientIP}, Device: ${deviceType}`);
+    console.log(`[INVITE] Created invite claim - Token: ${token}, Inviter: ${inviterUsername}, IPv4: ${ipv4}, IPv6: ${ipv6}, Device: ${deviceType}`);
 
     const title = "Join me on Stack Poker!";
     const description = "Your friend invited you to Stack Poker - the poker training app.";
@@ -177,8 +196,9 @@ function buildInvitePage(inviterUsername: string, token: string, title: string, 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { 
+    html {
       height: 100%;
+      background-color: #062d1f;
     }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -298,31 +318,19 @@ function buildInvitePage(inviterUsername: string, token: string, title: string, 
     }
 
     .download-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      width: 100%;
-      padding: 18px 24px;
-      background: #fff;
-      color: #0d5c3d;
-      font-size: 17px;
-      font-weight: 600;
-      border: none;
-      border-radius: 14px;
+      display: inline-block;
       cursor: pointer;
       text-decoration: none;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      transition: transform 0.15s ease;
     }
 
     .download-btn:active {
-      transform: scale(0.98);
+      transform: scale(0.95);
     }
 
-    .download-btn svg {
-      width: 22px;
-      height: 22px;
+    .download-btn img {
+      height: 64px;
+      width: auto;
     }
 
     .footer {
@@ -382,11 +390,8 @@ function buildInvitePage(inviterUsername: string, token: string, title: string, 
       </div>
     </div>
 
-    <a href="https://apps.apple.com/us/app/stack-poker-learn-train/id6745683972" class="download-btn" target="_blank">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-      </svg>
-      Download on the App Store
+    <a href="https://apps.apple.com/us/app/stack-poker-learn-train/id6745683972" class="download-btn" target="_blank" aria-label="Download on the App Store">
+      <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/white/en-us" alt="Download on the App Store" />
     </a>
 
     <div class="footer">
@@ -395,6 +400,92 @@ function buildInvitePage(inviterUsername: string, token: string, title: string, 
   </div>
 
   <div class="hidden-token" data-token="${token}" data-inviter="${escapeHtml(inviterUsername)}"></div>
+</body>
+</html>`;
+}
+
+function buildNotFoundPage(): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Invite Not Found - Stack Poker</title>
+  <meta name="theme-color" content="#0d5c3d">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { height: 100%; background-color: #062d1f; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: linear-gradient(180deg, #0d5c3d 0%, #094d33 50%, #062d1f 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      padding-top: max(24px, env(safe-area-inset-top));
+      padding-bottom: max(24px, env(safe-area-inset-bottom));
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+      text-align: center;
+    }
+    .container { max-width: 400px; width: 100%; }
+    .error-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .error-icon svg { width: 40px; height: 40px; color: rgba(255,255,255,0.6); }
+    h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      font-size: 16px;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+    .home-link {
+      display: inline-block;
+      padding: 14px 32px;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: background 0.15s ease;
+    }
+    .home-link:active { background: rgba(255,255,255,0.18); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="error-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+    </div>
+    <h1>Invite Not Found</h1>
+    <p class="subtitle">This invite link is invalid or the user doesn't exist. Ask your friend for a new link.</p>
+    <a href="https://stackpoker.gg" class="home-link">Go Back</a>
+  </div>
 </body>
 </html>`;
 }
