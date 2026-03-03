@@ -45,9 +45,9 @@ export interface SharedHand {
 // poker_hands collection format (live/manual hand tracking)
 export interface PokerHand {
   heroSeat: number;
-  heroContributions: number;
-  heroFolded: boolean;
-  heroPnL: number;
+  heroContributions?: number;
+  heroFolded?: boolean;
+  heroPnL?: number;
   meta: {
     bigBlind: number;
     smallBlind: number;

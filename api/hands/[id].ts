@@ -126,14 +126,14 @@ const transformPokerHandForWeb = (hand: PokerHand, handId: string, shared: Share
     handId,
     seats,
     buttonSeat,
-    smallBlind: hand.meta.smallBlind,
-    bigBlind: hand.meta.bigBlind,
+    smallBlind: hand.meta?.smallBlind ?? 1,
+    bigBlind: hand.meta?.bigBlind ?? 2,
     actions,
     board,
     winners,
     heroSeat,
-    heroDelta: hand.heroPnL,
-    potSize: hand.potSize,
+    heroDelta: hand.heroPnL ?? 0,
+    potSize: hand.potSize ?? 0,
     sharerName: shared.sharer_name,
     isDollars: true,
   };
@@ -200,14 +200,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .catch(() => {});
 
     let replayData: WebReplayData;
+    console.log("[DEBUG] handCollection:", handCollection);
+    console.log("[DEBUG] hand_id:", shared.hand_id);
+
     if (handCollection === "poker_hands") {
       const hand = handDoc.data() as PokerHand;
-      replayData = transformPokerHandForWeb(hand, shared.hand_id, shared);
+      console.log("[DEBUG] poker_hand data keys:", Object.keys(hand || {}));
+      console.log("[DEBUG] hand.meta:", JSON.stringify(hand?.meta));
+      console.log("[DEBUG] hand.players length:", hand?.players?.length);
+      console.log("[DEBUG] hand.streets keys:", Object.keys(hand?.streets || {}));
+      try {
+        replayData = transformPokerHandForWeb(hand, shared.hand_id, shared);
+        console.log("[DEBUG] transform succeeded");
+      } catch (transformError: unknown) {
+        console.error("[DEBUG] transform failed:", transformError);
+        throw transformError;
+      }
     } else {
       const hand = handDoc.data() as BotHandLog;
       replayData = transformHandForWeb(hand, shared);
     }
     const replayJson = JSON.stringify(replayData);
+    console.log("[DEBUG] replayJson length:", replayJson.length);
 
     const title = `Hand shared by @${escapeHtml(shared.sharer_name)} on Stack`;
     const description = escapeHtml(getHandDescription(replayData));
